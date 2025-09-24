@@ -4,23 +4,89 @@
   <title>Realtime Sensor Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h2 { color: #333; }
-    .data-entry { border-bottom: 1px solid #ddd; padding: 5px 0; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
+    h2 {
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .new-entry {
+      background-color: #e0ffe0; /* highlight data baru */
+      transition: background-color 1s ease;
+    }
+    #data-body {
+      max-height: 600px;
+      overflow-y: auto;
+      display: block;
+    }
   </style>
 </head>
 <body>
   <h2>Realtime Sensor Data</h2>
-  <div id="data"></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Device</th>
+        <th>Suhu1 (°C)</th>
+        <th>Kelembaban1 (%)</th>
+        <th>Suhu2 (°C)</th>
+        <th>Kelembaban2 (%)</th>
+        <th>UV Index</th>
+        <th>Debu</th>
+        <th>Curah Hujan</th>
+        <th>Kecepatan Angin</th>
+        <th>Arah Angin</th>
+        <th>Irradiance</th>
+      </tr>
+    </thead>
+    <tbody id="data-body"></tbody>
+  </table>
 
   <script>
     const SUPABASE_URL = "https://bryjpjzvsadfvjwqgwak.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyeWpwanp2c2FkZnZqd3Fnd2FrIiwicm9sZSI6ImFubG9uIiwiaWF0IjoxNzU4NDMwNDA1LCJleHAiOjIwNzQwMDY0MDV9.1iWQJhtE02t4JTcutIPkzxmn2qyx-Z7JCKFDQ8itCw8";
 
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const dataDiv = document.getElementById("data");
+    const dataBody = document.getElementById("data-body");
 
-    // Fungsi ambil data awal
+    // Format baris tabel untuk tiap entry
+    function formatEntryRow(d) {
+      return `
+        <td>${d.timestamp}</td>
+        <td>${d.device_id}</td>
+        <td>${d.suhu1}</td>
+        <td>${d.kelembaban1}</td>
+        <td>${d.suhu2}</td>
+        <td>${d.kelembaban2}</td>
+        <td>${d.uv_index}</td>
+        <td>${d.debu}</td>
+        <td>${d.curah_hujan}</td>
+        <td>${d.kecepatan_angin}</td>
+        <td>${d.arah_angin}</td>
+        <td>${d.irradiance}</td>
+      `;
+    }
+
+    // Ambil data awal
     async function loadData() {
       const { data, error } = await supabase
         .from('sensor_data')
@@ -28,39 +94,28 @@
         .order('timestamp', { ascending: false })
         .limit(20);
 
-      if (error) {
-        console.error("Error loading data:", error);
-        return;
-      }
+      if (error) { console.error(error); return; }
 
-      dataDiv.innerHTML = data.map(d => formatEntry(d)).join("");
+      dataBody.innerHTML = data.map(d => `<tr>${formatEntryRow(d)}</tr>`).join("");
     }
 
-    // Format HTML untuk tiap entry
-    function formatEntry(d) {
-      return `
-        <div class="data-entry">
-          <strong>[${d.timestamp}] Device: ${d.device_id}</strong><br>
-          Suhu1: ${d.suhu1}°C, Kelembaban1: ${d.kelembaban1}%, <br>
-          Suhu2: ${d.suhu2}°C, Kelembaban2: ${d.kelembaban2}%, <br>
-          UV Index: ${d.uv_index}, UV Intensity: ${d.uv_intensity}, <br>
-          Debu: ${d.debu}, Kecepatan Angin: ${d.kecepatan_angin}, Arah Angin: ${d.arah_angin}, <br>
-          Curah Hujan: ${d.curah_hujan}, Irradiance: ${d.irradiance}
-        </div>
-      `;
-    }
-
-    loadData(); // ambil data awal
+    loadData(); // load data pertama kali
 
     // Realtime subscription
-    supabase
-      .channel('sensor-realtime')
+    supabase.channel('sensor-realtime')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sensor_data' }, payload => {
         const entry = payload.new;
-        const div = document.createElement("div");
-        div.classList.add("data-entry");
-        div.innerHTML = formatEntry(entry);
-        dataDiv.prepend(div); // tampilkan paling atas
+        const tr = document.createElement("tr");
+        tr.innerHTML = formatEntryRow(entry);
+        tr.classList.add("new-entry");
+        dataBody.prepend(tr);
+
+        setTimeout(() => tr.classList.remove("new-entry"), 5000);
+
+        // Batasi row maksimal 50
+        while (dataBody.rows.length > 50) {
+          dataBody.removeChild(dataBody.lastChild);
+        }
       })
       .subscribe();
   </script>

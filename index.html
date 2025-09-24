@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Realtime Sensor Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h2 { color: #333; }
+    .data-entry { border-bottom: 1px solid #ddd; padding: 5px 0; }
+  </style>
+</head>
+<body>
+  <h2>Realtime Sensor Data</h2>
+  <div id="data"></div>
+
+  <script>
+    const SUPABASE_URL = "https://bryjpjzvsadfvjwqgwak.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyeWpwanp2c2FkZnZqd3Fnd2FrIiwicm9sZSI6ImFubG9uIiwiaWF0IjoxNzU4NDMwNDA1LCJleHAiOjIwNzQwMDY0MDV9.1iWQJhtE02t4JTcutIPkzxmn2qyx-Z7JCKFDQ8itCw8";
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const dataDiv = document.getElementById("data");
+
+    // Fungsi ambil data awal
+    async function loadData() {
+      const { data, error } = await supabase
+        .from('sensor_data')
+        .select('*')
+        .order('timestamp', { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error("Error loading data:", error);
+        return;
+      }
+
+      dataDiv.innerHTML = data.map(d => formatEntry(d)).join("");
+    }
+
+    // Format HTML untuk tiap entry
+    function formatEntry(d) {
+      return `
+        <div class="data-entry">
+          <strong>[${d.timestamp}] Device: ${d.device_id}</strong><br>
+          Suhu1: ${d.suhu1}°C, Kelembaban1: ${d.kelembaban1}%, <br>
+          Suhu2: ${d.suhu2}°C, Kelembaban2: ${d.kelembaban2}%, <br>
+          UV Index: ${d.uv_index}, UV Intensity: ${d.uv_intensity}, <br>
+          Debu: ${d.debu}, Kecepatan Angin: ${d.kecepatan_angin}, Arah Angin: ${d.arah_angin}, <br>
+          Curah Hujan: ${d.curah_hujan}, Irradiance: ${d.irradiance}
+        </div>
+      `;
+    }
+
+    loadData(); // ambil data awal
+
+    // Realtime subscription
+    supabase
+      .channel('sensor-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sensor_data' }, payload => {
+        const entry = payload.new;
+        const div = document.createElement("div");
+        div.classList.add("data-entry");
+        div.innerHTML = formatEntry(entry);
+        dataDiv.prepend(div); // tampilkan paling atas
+      })
+      .subscribe();
+  </script>
+</body>
+</html>

@@ -65,10 +65,11 @@
     const SUPABASE_URL = "https://bryjpjzvsadfvjwqgwak.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyeWpwanp2c2FkZnZqd3Fnd2FrIiwicm9sZSI6ImFubG9uIiwiaWF0IjoxNzU4NDMwNDA1LCJleHAiOjIwNzQwMDY0MDV9.1iWQJhtE02t4JTcutIPkzxmn2qyx-Z7JCKFDQ8itCw8";
 
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Perbaikan: buat client Supabase dengan nama variabel berbeda dari library
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const dataBody = document.getElementById("data-body");
 
-    // Format baris tabel untuk tiap entry
+    // Format baris tabel
     function formatEntryRow(d) {
       return `
         <td>${d.timestamp}</td>
@@ -86,23 +87,23 @@
       `;
     }
 
-    // Ambil data awal
+    // Load data awal
     async function loadData() {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('sensor_data')
         .select('*')
         .order('timestamp', { ascending: false })
         .limit(20);
 
-      if (error) { console.error(error); return; }
+      if (error) { console.error("Error loading data:", error); return; }
 
       dataBody.innerHTML = data.map(d => `<tr>${formatEntryRow(d)}</tr>`).join("");
     }
 
-    loadData(); // load data pertama kali
+    loadData(); // ambil data pertama kali
 
     // Realtime subscription
-    supabase.channel('sensor-realtime')
+    supabaseClient.channel('sensor-realtime')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sensor_data' }, payload => {
         const entry = payload.new;
         const tr = document.createElement("tr");

@@ -1,94 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Realtime Sensor Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f9f9f9;
-    }
-    h2 {
-      color: #333;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    thead, tbody {
-      display: block;
-    }
-    thead {
-      /* tetap di atas */
-    }
-    tbody {
-      max-height: 600px;
-      overflow-y: auto;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-      min-width: 100px;
-      box-sizing: border-box;
-    }
-    th {
-      background-color: #4CAF50;
-      color: white;
-    }
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-    .new-entry {
-      background-color: #e0ffe0; /* highlight data baru */
-      transition: background-color 1s ease;
-    }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h2>Realtime Sensor Data</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Timestamp</th>
-        <th>Device</th>
-        <th>Suhu1 (°C)</th>
-        <th>Kelembaban1 (%)</th>
-        <th>Suhu2 (°C)</th>
-        <th>Kelembaban2 (%)</th>
-        <th>UV Index</th>
-        <th>Debu</th>
-        <th>Curah Hujan</th>
-        <th>Kecepatan Angin</th>
-        <th>Arah Angin</th>
-        <th>Irradiance</th>
-      </tr>
-    </thead>
-    <tbody id="data-body"></tbody>
-  </table>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+  <header class="bg-white shadow p-4 flex justify-between items-center sticky top-0">
+    <h1 class="text-xl font-bold text-gray-800">Realtime Sensor Dashboard</h1>
+    <span id="clock" class="text-gray-600 font-mono"></span>
+  </header>
+
+  <main class="p-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <div class="text-2xl font-bold" id="suhu1">- °C</div>
+      <div class="text-sm text-gray-500">Suhu 1</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <div class="text-2xl font-bold" id="kelembaban1">- %</div>
+      <div class="text-sm text-gray-500">Kelembaban 1</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <div class="text-2xl font-bold" id="suhu2">- °C</div>
+      <div class="text-sm text-gray-500">Suhu 2</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <div class="text-2xl font-bold" id="kelembaban2">- %</div>
+      <div class="text-sm text-gray-500">Kelembaban 2</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <div class="text-2xl font-bold" id="uv_index">-</div>
+      <div class="text-sm text-gray-500">UV Index</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <div class="text-2xl font-bold" id="uv_intensity">-</div>
+      <div class="text-sm text-gray-500">UV Intensity</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <div class="text-2xl font-bold" id="debu">-</div>
+      <div class="text-sm text-gray-500">Debu</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <div class="text-2xl font-bold" id="curah_hujan">-</div>
+      <div class="text-sm text-gray-500">Curah Hujan</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <div class="text-2xl font-bold" id="kecepatan_angin">-</div>
+      <div class="text-sm text-gray-500">Kecepatan Angin</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <div class="text-2xl font-bold" id="arah_angin">-</div>
+      <div class="text-sm text-gray-500">Arah Angin</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4 text-center">
+      <div class="text-2xl font-bold" id="irradiance">-</div>
+      <div class="text-sm text-gray-500">Radiasi Matahari</div>
+    </div>
+  </main>
+  
+  <section class="p-4 mt-6">
+    <h2 class="text-lg font-bold text-gray-800 mb-2">Histori Data Sensor</h2>
+    <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
+      <table class="min-w-full border-collapse text-center">
+        <thead>
+          <tr class="bg-green-500 text-white">
+            <th class="px-4 py-2">Timestamp</th>
+            <th class="px-4 py-2">Device</th>
+            <th class="px-4 py-2">Suhu1</th>
+            <th class="px-4 py-2">Kelembaban1</th>
+            <th class="px-4 py-2">Suhu2</th>
+            <th class="px-4 py-2">Kelembaban2</th>
+            <th class="px-4 py-2">UV Index</th>
+            <th class="px-4 py-2">Debu</th>
+            <th class="px-4 py-2">Curah Hujan</th>
+            <th class="px-4 py-2">Kecepatan Angin</th>
+            <th class="px-4 py-2">Arah Angin</th>
+            <th class="px-4 py-2">Irradiance</th>
+          </tr>
+        </thead>
+        <tbody id="data-body"></tbody>
+      </table>
+    </div>
+  </section>
   <script>
     const SUPABASE_URL = "https://bryjpjzvsadfvjwqgwak.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyeWpwanp2c2FkZnZqd3Fnd2FrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0MzA0MDUsImV4cCI6MjA3NDAwNjQwNX0.1iWQJhtE02t4JTcutIPkzxmn2qyx-Z7JCKFDQ8itCw8";
-
-    // Perbaikan: buat client Supabase dengan nama variabel berbeda dari library
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const dataBody = document.getElementById("data-body");
-    
-    function formatEntryRow(d) {
+
+    function updateDashboard(d) {
+      document.getElementById("suhu1").textContent = d.suhu1 + " °C";
+      document.getElementById("kelembaban1").textContent = d.kelembaban1 + " %";
+      document.getElementById("suhu2").textContent = d.suhu2 + " °C";
+      document.getElementById("kelembaban2").textContent = d.kelembaban2 + " %";
+      document.getElementById("uv_index").textContent = d.uv_index;
+      document.getElementById("uv_intensity").textContent = d.uv_intensity;
+      document.getElementById("debu").textContent = d.debu;
+      document.getElementById("curah_hujan").textContent = d.curah_hujan;
+      document.getElementById("kecepatan_angin").textContent = d.kecepatan_angin;
+      document.getElementById("arah_angin").textContent = d.arah_angin;
+      document.getElementById("irradiance").textContent = d.irradiance;
+    }
+
+    function formatRow(d) {
       return `
-        <td>${d.timestamp}</td>
-        <td>${d.device_id}</td>
-        <td>${d.suhu1}</td>
-        <td>${d.kelembaban1}</td>
-        <td>${d.suhu2}</td>
-        <td>${d.kelembaban2}</td>
-        <td>${d.uv_index}</td>
-        <td>${d.debu}</td>
-        <td>${d.curah_hujan}</td>
-        <td>${d.kecepatan_angin}</td>
-        <td>${d.arah_angin}</td>
-        <td>${d.irradiance}</td>
+        <tr class="bg-white">
+          <td class="border px-2 py-1">${d.timestamp}</td>
+          <td class="border px-2 py-1">${d.device_id}</td>
+          <td class="border px-2 py-1">${d.suhu1}</td>
+          <td class="border px-2 py-1">${d.kelembaban1}</td>
+          <td class="border px-2 py-1">${d.suhu2}</td>
+          <td class="border px-2 py-1">${d.kelembaban2}</td>
+          <td class="border px-2 py-1">${d.uv_index}</td>
+          <td class="border px-2 py-1">${d.debu}</td>
+          <td class="border px-2 py-1">${d.curah_hujan}</td>
+          <td class="border px-2 py-1">${d.kecepatan_angin}</td>
+          <td class="border px-2 py-1">${d.arah_angin}</td>
+          <td class="border px-2 py-1">${d.irradiance}</td>
+        </tr>
       `;
     }
     
@@ -98,15 +130,13 @@
         .select('*')
         .order('timestamp', { ascending: false })
         .limit(20);
-
       if (error) { console.error("Error loading data:", error); return; }
-
-      dataBody.innerHTML = data.map(d => `<tr>${formatEntryRow(d)}</tr>`).join("");
+      dataBody.innerHTML = data.map(d => formatRow(d)).join("");
+      if (data.length) updateDashboard(data[0]); // update dashboard dengan data terbaru
     }
 
     loadData();
-
-    // Realtime subscription
+    
     supabaseClient.channel('sensor-realtime')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sensor_data' }, payload => {
         const entry = payload.new;
@@ -123,6 +153,13 @@
         }
       })
       .subscribe();
+    function updateClock() {
+      const now = new Date();
+      const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      document.getElementById('clock').textContent = now.toLocaleTimeString('id-ID', options);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
   </script>
 </body>
 </html>

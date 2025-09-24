@@ -16,10 +16,22 @@
       width: 100%;
       border-collapse: collapse;
     }
+    thead, tbody {
+      display: block;
+    }
+    thead {
+      /* tetap di atas */
+    }
+    tbody {
+      max-height: 600px;
+      overflow-y: auto;
+    }
     th, td {
       border: 1px solid #ddd;
       padding: 8px;
       text-align: center;
+      min-width: 100px;
+      box-sizing: border-box;
     }
     th {
       background-color: #4CAF50;
@@ -31,11 +43,6 @@
     .new-entry {
       background-color: #e0ffe0; /* highlight data baru */
       transition: background-color 1s ease;
-    }
-    #data-body {
-      max-height: 600px;
-      overflow-y: auto;
-      display: block;
     }
   </style>
 </head>
@@ -60,7 +67,6 @@
     </thead>
     <tbody id="data-body"></tbody>
   </table>
-
   <script>
     const SUPABASE_URL = "https://bryjpjzvsadfvjwqgwak.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyeWpwanp2c2FkZnZqd3Fnd2FrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0MzA0MDUsImV4cCI6MjA3NDAwNjQwNX0.1iWQJhtE02t4JTcutIPkzxmn2qyx-Z7JCKFDQ8itCw8";
@@ -68,8 +74,7 @@
     // Perbaikan: buat client Supabase dengan nama variabel berbeda dari library
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const dataBody = document.getElementById("data-body");
-
-    // Format baris tabel
+    
     function formatEntryRow(d) {
       return `
         <td>${d.timestamp}</td>
@@ -86,8 +91,7 @@
         <td>${d.irradiance}</td>
       `;
     }
-
-    // Load data awal
+    
     async function loadData() {
       const { data, error } = await supabaseClient
         .from('sensor_data')
@@ -100,7 +104,7 @@
       dataBody.innerHTML = data.map(d => `<tr>${formatEntryRow(d)}</tr>`).join("");
     }
 
-    loadData(); // ambil data pertama kali
+    loadData();
 
     // Realtime subscription
     supabaseClient.channel('sensor-realtime')

@@ -7,20 +7,67 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 min-h-screen font-sans">
+  <body class="bg-white min-h-screen text-gray-900 font-sans flex flex-col">
+  
+  <!-- Header -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-white/40 backdrop-blur-xl border-b border-white/20 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16 sm:h-20">
+        
+        <!-- Logo + Judul -->
+        <div class="flex items-center gap-3 flex-wrap">
+          <img src="assets/images/drpm.png" alt="Logo DRPM" class="h-14 w-14 sm:h-20 sm:w-20 object-contain">
+          <img src="assets/images/untad.png" alt="Logo Untad" class="h-5 w-5 sm:h-8 sm:w-8 object-contain">
+          <div>
+            <h1 class="text-base sm:text-xl md:text-2xl font-bold text-gray-800 tracking-tight">Sistem Monitoring</h1>
+            <p class="text-xs sm:text-sm text-gray-500">Universitas Tadulako</p>
+          </div>
+        </div>
+        <!-- Navigasi (Desktop) -->
+        <nav class="hidden md:flex items-center gap-8">
+          <button onclick="showPage('utama', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Utama</button>
+          <button onclick="showPage('grafik', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Grafik</button>
+          <button onclick="showPage('histori', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Histori</button>
+        </nav>
 
-  <header class="bg-white shadow p-4 flex justify-between items-center sticky top-0">
-    <h1 class="text-xl font-bold text-gray-800">Realtime Sensor Dashboard</h1>
-    <span id="clock" class="text-gray-600 font-mono"></span>
-  </header>
+        <!-- Jam -->
+        <span id="clock" class="block font-mono text-sm sm:text-base text-gray-600"></span>
 
-  <main class="p-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-    <div class="bg-white rounded-xl shadow p-4 text-center">
-      <div class="text-2xl font-bold" id="suhu1">- °C</div>
-      <div class="text-sm text-gray-500">Suhu 1</div>
+        <!-- Tombol Mobile -->
+        <div class="md:hidden">
+          <button id="menuBtn" class="focus:outline-none text-xl text-gray-700 hover:text-blue-600 transition-colors duration-300">☰</button>
+        </div>
+      </div>
     </div>
-    <div class="bg-white rounded-xl shadow p-4 text-center">
-      <div class="text-2xl font-bold" id="kelembaban1">- %</div>
+    <!-- Menu Mobile -->
+    <div id="mobileMenu" class="hidden md:hidden absolute top-20 inset-x-0 bg-white/95 backdrop-blur-xl border-t border-gray-200 shadow-lg animate-slide-down">
+      <nav class="flex flex-col px-6 py-4 space-y-4">
+        <button onclick="showPage('utama', this)" class="nav-link text-left">Utama</button>
+        <button onclick="showPage('grafik', this)" class="nav-link text-left">Grafik</button>
+        <button onclick="showPage('histori', this)" class="nav-link text-left">Histori</button>
+      </nav>
+    </div>
+  </header>
+    
+    <div class="flex-1 pt-24">
+      <div id="utama">
+        <!-- Nilai Utama -->
+        <div class="flex flex-col items-center">
+          <div class="text-6xl font-bold text-gray-900" id="suhuUtama"></div>
+          <div class="text-lg text-gray-600" id="kondisiCuaca">-</div>
+          <h3 class="text-xl font-bold mt-2">Lokasi: Rumah Penelitian</h3>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-4 p-4">
+          <div class="param-card">
+            <div class="mb-1">🌡️</div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="suhu1">- °C</div>
+            <div class="text-xs sm:text-sm text-gray-500">Suhu 1</div>
+          </div>
+        
+      
+        <div class="bg-white rounded-xl shadow p-4 text-center">
+          <div class="text-2xl font-bold" id="kelembaban1">- %</div>
       <div class="text-sm text-gray-500">Kelembaban 1</div>
     </div>
     <div class="bg-white rounded-xl shadow p-4 text-center">

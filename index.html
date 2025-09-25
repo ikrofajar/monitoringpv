@@ -348,7 +348,7 @@
       document.getElementById("irradiance").textContent = d.irradiance;
       let rataSuhu = ((d.suhu1 + d.suhu2) / 2).toFixed(1);
       document.getElementById("suhuUtama").textContent = rataSuhu + " °C";
-      setLevel(d.suhu1);
+      setLevel(parseFloat(rataSuhu));
       let kondisi;
       if (rataSuhu < 18) {kondisi = "Dingin";}
       else if (rataSuhu >= 18 && rataSuhu <= 26) {kondisi = "Normal";}

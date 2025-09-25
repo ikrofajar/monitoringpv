@@ -25,59 +25,65 @@
     }
     @media (min-width: 640px) {
       .param-card {
-        width: 7rem;  /* sm:w-28 */
-        height: 7rem; /* sm:h-28 */
+        width: 7rem;
+        height: 7rem;
       }
     }
     @media (min-width: 768px) {
       .param-card {
-        width: 8rem;  /* md:w-32 */
-        height: 8rem; /* md:h-32 */
+        width: 8rem;
+        height: 8rem;
       }
     }
-    /* ==== LINGKARAN SUHU ==== */
-    #water { transition: stroke-dashoffset 0.5s ease; }
-    #valueDisplay {
-      position: absolute;
-      font-weight: bold;
-      font-size: 3rem;
-      color: deepskyblue;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 200px;
-    }
-    #emoji {
-      position: absolute;
-      font-size: 4rem;
-      left: 50%;
-      top: 120px;
-      transform: translate(-50%, -50%);
-    }
-    #emojiText {
-      position: absolute;
-      font-size: 2rem;
-      left: 50%;
-      top: 170px;
-      transform: translateX(-50%);
-      color: gray;
-      text-align: center;
-    }
+    #water {transition: stroke-dashoffset 0.5s ease;}
     #container {
       position: relative;
-      width: 300px;
-      height: 300px;
+      width: 150px;
+      height: 150px;
       margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-    </style>
+    #emoji {
+      font-size: 2rem;
+      color: rgb(255, 85, 0);
+      z-index: 10;
+    }
+    #valueDisplay {
+      font-weight: bold;
+      font-size: 1rem;
+      z-index: 10;
+    }
+    #kondisiCuaca {
+      font-size: 0.875rem; /* text-sm */
+      color: #4B5563; /* gray-600 */
+      margin-top: 0.25rem; /* mt-1 */
+      z-index: 10;
+    }
+    #clock {
+      font-size: 0.875rem;
+      color: #6B7280; /* gray-500 */
+      margin-top: 0.25rem;
+      z-index: 10;
+    }
+    #rumahPenelitian {
+      font-size: 0.875rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-top: 0.25rem;
+      z-index: 10;
+      text-align: center;
+    }
+  </style>
 </head>
   <body class="bg-white min-h-screen text-gray-900 font-sans flex flex-col">
-  
-  <!-- Header -->
   <header class="fixed top-0 left-0 w-full z-50 bg-white/40 backdrop-blur-xl border-b border-white/20 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16 sm:h-20">
-        
-        <!-- Logo + Judul -->
         <div class="flex items-center gap-3 flex-wrap">
           <img src="assets/images/drpm.png" alt="Logo DRPM" class="h-14 w-14 sm:h-20 sm:w-20 object-contain">
           <img src="assets/images/untad.png" alt="Logo Untad" class="h-5 w-5 sm:h-8 sm:w-8 object-contain">
@@ -86,23 +92,16 @@
             <p class="text-xs sm:text-sm text-gray-500">Universitas Tadulako</p>
           </div>
         </div>
-        <!-- Navigasi (Desktop) -->
         <nav class="hidden md:flex items-center gap-8">
           <button onclick="showPage('utama', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Utama</button>
           <button onclick="showPage('grafik', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Grafik</button>
           <button onclick="showPage('histori', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Histori</button>
         </nav>
-
-        <!-- Jam -->
-        <span id="clock" class="block font-mono text-sm sm:text-base text-gray-600"></span>
-
-        <!-- Tombol Mobile -->
         <div class="md:hidden">
           <button id="menuBtn" class="focus:outline-none text-xl text-gray-700 hover:text-blue-600 transition-colors duration-300">☰</button>
         </div>
       </div>
     </div>
-    <!-- Menu Mobile -->
     <div id="mobileMenu" class="hidden md:hidden absolute top-20 inset-x-0 bg-white/95 backdrop-blur-xl border-t border-gray-200 shadow-lg animate-slide-down">
       <nav class="flex flex-col px-6 py-4 space-y-4">
         <button onclick="showPage('utama', this)" class="nav-link text-left">Utama</button>
@@ -111,100 +110,93 @@
       </nav>
     </div>
   </header>
-    
-    <div class="flex-1 pt-24">
-      <div id="utama">
-        <!-- ==== LINGKARAN SUHU ==== -->
-        <div class="flex justify-center mt-4 mb-6">
-          <div id="container">
-            <svg id="hoseSvg" width="300" height="300" viewBox="0 0 300 300">
-              <circle id="water" cx="150" cy="150" r="120"
-                      stroke="deepskyblue" stroke-width="30" fill="none"
-                      stroke-linecap="round"
-                      transform="rotate(140 150 150)" />
-            </svg>
-            <div id="emoji">🌡️</div>
-            <div id="emojiText">Suhu</div>
-            <div id="valueDisplay">-</div>
-          </div>
-        </div>
-        <!-- Nilai Utama -->
-        <div class="flex flex-col items-center">
-          <!--<div class="text-6xl font-bold text-gray-900" id="suhuUtama">-</div>-->
-          <div class="text-lg text-gray-600" id="kondisiCuaca">-</div>
-          <h3 class="text-xl font-bold mt-2"><i class="fas fa-map-marker-alt text-red-500"></i> Rumah Penelitian</h3>
-        </div>
-
-        <div class="flex flex-wrap justify-center gap-4 p-4">
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-thermometer-half text-orange-400"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="suhu1">- °C</div>
-            <div class="text-xs sm:text-sm text-gray-500">Suhu 1</div>
-          </div>
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-tint text-blue-100"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban1">- %</div>
-            <div class="text-xs sm:text-sm text-gray-500">Kelembapan 1</div>
-          </div>
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-thermometer-half text-orange-500"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="suhu2">- °C</div>
-            <div class="text-xs sm:text-sm text-gray-500">Suhu 2</div>
-          </div>
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-tint text-blue-200"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban2">- %</div>
-            <div class="text-xs sm:text-sm text-gray-500">Kelembapan 2</div>
-          </div>
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-wind text-gray-200"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="kecepatan_angin">-</div>
-            <div class="text-xs sm:text-sm text-gray-500">Kecepatan Angin</div>
-          </div>
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-compass text-gray-300"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="arah_angin">-</div>
-            <div class="text-xs sm:text-sm text-gray-500">Arah Angin</div>
-          </div>
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-sun text-yellow-300"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="uv_index">-</div>
-            <div class="text-xs sm:text-sm text-gray-500">UV Index</div>
-          </div>
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-sun text-yellow-400"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="uv_intensity">-</div>
-            <div class="text-xs sm:text-sm text-gray-500">UV Intensity</div>
-          </div>
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-sun text-yellow-500"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="irradiance">-</div>
-            <div class="text-xs sm:text-sm text-gray-500">Radiasi Matahari</div>
-          </div>
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-smog text-gray-400"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="debu">- µg/m³</div>
-            <div class="text-xs sm:text-sm text-gray-500">Debu</div>
-          </div>
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-cloud-showers-heavy text-blue-400"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="curah_hujan">-</div>
-            <div class="text-xs sm:text-sm text-gray-500">Curah Hujan</div>
-          </div>
+  <div class="flex-1 pt-24">
+    <div id="utama">
+      <div class="flex justify-center">
+        <div id="container" class="relative w-40 h-40 flex flex-col items-center justify-center">
+          <svg id="hoseSvg" width="100%" height="100%" viewBox="0 0 200 200" class="absolute top-0 left-0">
+            <circle id="water" cx="100" cy="100" r="60"
+              stroke="deepskyblue" stroke-width="15" fill="none"
+              stroke-linecap="round"
+              transform="rotate(140 100 100)" />
+          </svg>
+          <div id="emoji" class="text-4xl text-orange-500 z-10"><i class="fas fa-temperature-half"></i></div>
+          <div id="valueDisplay" class="font-bold text-lg z-10">-</div>
+          <div id="kondisiCuaca" class="text-sm text-gray-600 z-10 mt-1">-</div>
+          <span id="clock" class="text-sm text-gray-500 mt-1 z-10"></span>
+          <h3 id="rumahPenelitian"><i class="fas fa-map-marker-alt text-red-500"></i> Rumah Penelitian</h3>
         </div>
       </div>
-      <div id="grafik" class="hidden">
-        <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="p-4 bg-white rounded-2xl shadow-lg">
-            <h2 class="text-lg font-semibold mb-2 text-gray-800">Suhu</h2>
-            <canvas id="chartSuhu"></canvas>
-          </div>
-          <div class="p-4 bg-white rounded-2xl shadow-lg">
-            <h2 class="text-lg font-semibold mb-2 text-gray-800">Kelembaban</h2>
-            <canvas id="chartKelembaban"></canvas>
-          </div>
-          <div class="p-4 bg-white rounded-2xl shadow-lg">
-            <h2 class="text-lg font-semibold mb-2 text-gray-800">Kecepatan Angin</h2>
+      <div class="flex flex-wrap justify-center gap-4 p-4">
+        <div class="param-card">
+          <div class="mb-1"><i class="fas fa-thermometer-half text-orange-400"></i></div>
+          <div class="text-sm sm:text-base md:text-lg font-semibold" id="suhu1">- °C</div>
+          <div class="text-xs sm:text-sm text-gray-500">Suhu 1</div>
+        </div>
+        <div class="param-card">
+          <div class="mb-1"><i class="fas fa-tint text-blue-100"></i></div>
+          <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban1">- %</div>
+          <div class="text-xs sm:text-sm text-gray-500">Kelembapan 1</div>
+        </div>
+        <div class="param-card">
+          <div class="mb-1"><i class="fas fa-thermometer-half text-orange-500"></i></div>
+          <div class="text-sm sm:text-base md:text-lg font-semibold" id="suhu2">- °C</div>
+          <div class="text-xs sm:text-sm text-gray-500">Suhu 2</div>
+        </div>
+        <div class="param-card">
+          <div class="mb-1"><i class="fas fa-tint text-blue-200"></i></div>
+          <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban2">- %</div>
+          <div class="text-xs sm:text-sm text-gray-500">Kelembapan 2</div>
+        </div>
+        <div class="param-card">
+          <div class="mb-1"><i class="fas fa-wind text-gray-200"></i></div>
+          <div class="text-sm sm:text-base md:text-lg font-semibold" id="kecepatan_angin">-</div>
+          <div class="text-xs sm:text-sm text-gray-500">Kecepatan Angin</div>
+        </div>
+        <div class="param-card">
+          <div class="mb-1"><i class="fas fa-compass text-gray-300"></i></div>
+          <div class="text-sm sm:text-base md:text-lg font-semibold" id="arah_angin">-</div>
+          <div class="text-xs sm:text-sm text-gray-500">Arah Angin</div>
+        </div>
+        <div class="param-card">
+          <div class="mb-1"><i class="fas fa-sun text-yellow-300"></i></div>
+          <div class="text-sm sm:text-base md:text-lg font-semibold" id="uv_index">-</div>
+          <div class="text-xs sm:text-sm text-gray-500">UV Index</div>
+        </div>
+        <div class="param-card">
+          <div class="mb-1"><i class="fas fa-sun text-yellow-400"></i></div>
+          <div class="text-sm sm:text-base md:text-lg font-semibold" id="uv_intensity">-</div>
+          <div class="text-xs sm:text-sm text-gray-500">UV Intensity</div>
+        </div>
+        <div class="param-card">
+          <div class="mb-1"><i class="fas fa-sun text-yellow-500"></i></div>
+          <div class="text-sm sm:text-base md:text-lg font-semibold" id="irradiance">-</div>
+          <div class="text-xs sm:text-sm text-gray-500">Radiasi Matahari</div>
+        </div>
+        <div class="param-card">
+          <div class="mb-1"><i class="fas fa-smog text-gray-400"></i></div>
+          <div class="text-sm sm:text-base md:text-lg font-semibold" id="debu">- µg/m³</div>
+          <div class="text-xs sm:text-sm text-gray-500">Debu</div>
+        </div>
+        <div class="param-card">
+          <div class="mb-1"><i class="fas fa-cloud-showers-heavy text-blue-400"></i></div>
+          <div class="text-sm sm:text-base md:text-lg font-semibold" id="curah_hujan">-</div>
+          <div class="text-xs sm:text-sm text-gray-500">Curah Hujan</div>
+        </div>
+      </div>
+    </div>
+    <div id="grafik" class="hidden">
+      <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-4 bg-white rounded-2xl shadow-lg">
+          <h2 class="text-lg font-semibold mb-2 text-gray-800">Suhu</h2>
+          <canvas id="chartSuhu"></canvas>
+        </div>
+        <div class="p-4 bg-white rounded-2xl shadow-lg">
+          <h2 class="text-lg font-semibold mb-2 text-gray-800">Kelembaban</h2>
+          <canvas id="chartKelembaban"></canvas>
+        </div>
+        <div class="p-4 bg-white rounded-2xl shadow-lg">
+          <h2 class="text-lg font-semibold mb-2 text-gray-800">Kecepatan Angin</h2>
             <canvas id="chartAngin"></canvas>
           </div>
           <div class="p-4 bg-white rounded-2xl shadow-lg flex flex-col items-center">
@@ -240,9 +232,7 @@
               <input type="date" id="startDate" class="rounded-xl border px-3 py-2 text-sm text-gray-700">
               <span class="text-gray-400 text-sm">—</span>
               <input type="date" id="endDate" class="rounded-xl border px-3 py-2 text-sm text-gray-700">
-              <button id="downloadCsvBtn" class="ml-4 rounded-xl bg-blue-100 text-blue-600 px-3 py-2 text-sm font-semibold">
-                Unduh Data
-              </button>
+              <button id="downloadCsvBtn" class="ml-4 rounded-xl bg-blue-100 text-blue-600 px-3 py-2 text-sm font-semibold">Unduh Data</button>
             </div>
           </div>
           <div class="overflow-x-auto rounded-2xl border border-gray-200">
@@ -318,10 +308,10 @@
     const dataBody = document.getElementById("data-body");
     const water = document.getElementById("water");
     const valueDisplay = document.getElementById("valueDisplay");
-    const radius = 120;
+    const radius = 60;
     const circumference = 2 * Math.PI * radius;
     const arcLength = circumference * (260 / 360);
-    water.style.strokeDasharray = arcLength + " " + circumference;
+    water.style.strokeDasharray = `${arcLength} ${circumference}`;
     water.style.strokeDashoffset = arcLength;
 
     const minTemp = 0;
@@ -347,7 +337,6 @@
       document.getElementById("arah_angin").textContent = d.arah_angin;
       document.getElementById("irradiance").textContent = d.irradiance;
       let rataSuhu = ((d.suhu1 + d.suhu2) / 2).toFixed(1);
-      //document.getElementById("suhuUtama").textContent = rataSuhu + " °C";
       setLevel(parseFloat(rataSuhu));
       let kondisi;
       if (rataSuhu < 18) {kondisi = "Dingin";}
@@ -383,7 +372,7 @@
         .limit(20);
       if (error) { console.error("Error loading data:", error); return; }
       dataBody.innerHTML = data.map(d => formatRow(d)).join("");
-      if (data.length) updateDashboard(data[0]); // update dashboard dengan data terbaru
+      if (data.length) updateDashboard(data[0]);
     }
 
     loadData();

@@ -204,7 +204,7 @@
             <h2 class="text-xl font-semibold mb-4 text-gray-800">Arah Angin</h2>
             <canvas id="compass" width="360" height="360"></canvas>
             <div id="windInfo" class="mt-4 text-center">
-              <p class="text-lg font-medium text-gray-900" id="chartArahAngin">Arah: 0° (Utara)</p>
+              <p class="text-lg font-medium text-gray-900" id="chartArahAngin">-</p>
             </div>
           </div>
           <div class="p-4 bg-white rounded-2xl shadow-lg">
@@ -346,7 +346,7 @@
       document.getElementById("kondisiCuaca").textContent = kondisi;
     }
     function initCharts() {
-    if (!window.allCharts) window.allCharts = {};
+        if (!window.allCharts) window.allCharts = {};
 
     const chartConfigs = [
         {id:'chartSuhu', labels:['Suhu 1','Suhu 2'], colors:[[255,99,132],[255,159,64]]},
@@ -359,8 +359,9 @@
     ];
 
     const createGradient = (ctx, r, g, b) => {
-        const grad = ctx.createLinearGradient(0,0,0,400);
-        grad.addColorStop(0, `rgba(${r},${g},${b},0.5)`);
+        const grad = ctx.createLinearGradient(0, 0 , 0, ctx.canvas.height);
+        grad.addColorStop(0, `rgba(${r},${g},${b},0.4)`);
+        grad.addColorStop(0.5, `rgba(${r},${g},${b},0.15)`);
         grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
         return grad;
     };
@@ -372,21 +373,47 @@
         if (window.allCharts[cfg.id]) window.allCharts[cfg.id].destroy();
 
         const datasets = cfg.labels.map((label,i) => ({
-        label,
-        data:[],
-        borderColor:`rgb(${cfg.colors[i].join(',')})`,
-        backgroundColor:createGradient(ctx,...cfg.colors[i]),
-        fill:true,
-        tension:0.4
+            label,
+            data:[],
+            borderColor:`rgb(${cfg.colors[i].join(',')})`,
+            backgroundColor:createGradient(ctx,...cfg.colors[i]),
+            fill:true,
+            tension:0.35, // lebih smooth
+            pointRadius:5,
+            pointHoverRadius:7,
+            pointBackgroundColor:`rgb(${cfg.colors[i].join(',')})`,
+            pointHoverBackgroundColor:'#fff',
+            borderWidth:3,
+            shadowOffsetX:0, // Shadow untuk line (modern)
+            shadowOffsetY:4,
+            shadowBlur:6,
+            shadowColor:`rgba(0,0,0,0.1)`
         }));
 
         window.allCharts[cfg.id] = new Chart(ctx,{
         type:'line',
         data:{labels:[], datasets},
-        options:{responsive:true, interaction:{mode:'index',intersect:false}, plugins:{legend:{position:'top'}}}
+        options:{
+            responsive:true,
+            interaction:{mode:'index',intersect:false},
+            plugins:{
+                legend:{position:'top', labels:{boxWidth:12, padding:15, usePointStyle:true}},
+                    tooltip:{
+                        backgroundColor:'rgba(0,0,0,0.7)',
+                        titleColor:'#fff',
+                        bodyColor:'#fff',
+                        padding:10,
+                        cornerRadius:8
+                    }
+                },
+                scales:{
+                    x:{grid:{display:false}, ticks:{color:'#666', padding:10}},
+                    y:{grid:{color:'rgba(200,200,200,0.1)'}, ticks:{color:'#666', padding:10}}
+                }
+            }
         });
     });
-    }
+}
 
     // Update chart dengan data baru
     function updateAllCharts(entry){
@@ -424,11 +451,43 @@
         const center = 180;
         ctx.clearRect(0,0,360,360);
         ctx.beginPath();
-        ctx.arc(center,center,150,0,2*Math.PI); ctx.strokeStyle="#ddd"; ctx.lineWidth=2; ctx.stroke();
+        ctx.arc(center,center,150,0,2*Math.PI);
+        ctx.strokeStyle="#bbb";
+        ctx.lineWidth=2;
+        ctx.shadowColor='rgba(0,0,0,0.05)';
+        ctx.shadowBlur=15;
+        ctx.stroke();
+
+        const directions = ['U','TL','T','TG','S','BD','B','BL'];
+        directions.forEach((dir,i)=>{
+            const dirAngle = i * 45 * Math.PI/180;
+            const x = center + (150+20) * Math.cos(dirAngle - Math.PI/2);
+            const y = center + (150+20) * Math.sin(dirAngle - Math.PI/2);
+            ctx.fillStyle="#333";
+            ctx.font="bold 14px 'Arial', sans-serif";
+            ctx.textAlign="center";
+            ctx.textBaseline="middle";
+            ctx.fillText(dir,x,y);
+        });
+
         ctx.beginPath();
         ctx.moveTo(center,center);
         ctx.lineTo(center+120*Math.cos(angle-Math.PI/2), center+120*Math.sin(angle-Math.PI/2));
-        ctx.strokeStyle="red"; ctx.lineWidth=5; ctx.stroke();
+        ctx.strokeStyle = '#ff4d4f';
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+        ctx.shadowColor = 'rgba(255,77,79,0.4)';
+        ctx.shadowBlur = 15;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(center, center, 12, 0, 2*Math.PI);
+        ctx.fillStyle = '#ff4d4f';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(0,0,0,0.2)';
+        ctx.fill();
+        ctx.moveTo(center, center);
+        ctx.lineTo(center + 120*Math.cos(angle-Math.PI/2), center + 120*Math.sin(angle-Math.PI/2));
+        
         document.getElementById('chartArahAngin').textContent = `Arah: ${entry.arah_angin}°`;
     }
     }

@@ -6,6 +6,35 @@
   <title>Realtime Sensor Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .param-card {
+      width: 6rem;              /* w-24 */
+      height: 6rem;             /* h-24 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: white;  /* bg-white */
+      border-radius: 1rem;      /* rounded-2xl */
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* shadow-md */
+      transition: transform 0.3s; /* transition-transform duration-300 */
+    }
+    .param-card:hover {
+      transform: scale(1.05);   /* hover:scale-105 */
+    }
+    @media (min-width: 640px) {
+      .param-card {
+        width: 7rem;  /* sm:w-28 */
+        height: 7rem; /* sm:h-28 */
+      }
+    }
+    @media (min-width: 768px) {
+      .param-card {
+        width: 8rem;  /* md:w-32 */
+        height: 8rem; /* md:h-32 */
+      }
+    }
+    </style>
 </head>
   <body class="bg-white min-h-screen text-gray-900 font-sans flex flex-col">
   
@@ -114,7 +143,47 @@
             <div class="text-sm sm:text-base md:text-lg font-semibold" id="curah_hujan">-</div>
             <div class="text-xs sm:text-sm text-gray-500">Curah Hujan</div>
           </div>
-  </main>
+        </div>
+      </div>
+      <div id="grafik" class="hidden">
+        <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-4 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">Suhu</h2>
+            <canvas id="chartSuhu"></canvas>
+          </div>
+          <div class="p-4 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">Kelembaban</h2>
+            <canvas id="chartKelembaban"></canvas>
+          </div>
+          <div class="p-4 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">Kecepatan Angin</h2>
+            <canvas id="chartAngin"></canvas>
+          </div>
+          <div class="p-4 bg-white rounded-2xl shadow-lg flex flex-col items-center">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Arah Angin</h2>
+            <canvas id="compass" width="360" height="360"></canvas>
+            <div id="windInfo" class="mt-4 text-center">
+              <p class="text-lg font-medium text-gray-900" id="chartArahAngin">Arah: 0° (Utara)</p>
+            </div>
+          </div>
+          <div class="p-4 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">Sinar UV</h2>
+            <canvas id="chartUV"></canvas>
+          </div>
+          <div class="p-4 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">Radiasi Matahari</h2>
+            <canvas id="chartRadiasi"></canvas>
+          </div>
+          <div class="p-4 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">Debu</h2>
+            <canvas id="chartDebu"></canvas>
+          </div>
+          <div class="p-4 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">Curah Hujan</h2>
+            <canvas id="chartHujan"></canvas>
+          </div>
+        </div>
+      </div>
   
   <section class="p-4 mt-6">
     <h2 class="text-lg font-bold text-gray-800 mb-2">Histori Data Sensor</h2>

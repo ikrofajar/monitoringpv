@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Realtime Sensor Dashboard</title>
+  <title>MonitoringPV</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .param-card {
-      width: 6rem;              /* w-24 */
-      height: 6rem;             /* h-24 */
+      width: 6rem;
+      height: 6rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -184,73 +184,85 @@
           </div>
         </div>
       </div>
-  
-  <section class="p-4 mt-6">
-    <h2 class="text-lg font-bold text-gray-800 mb-2">Histori Data Sensor</h2>
-    <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
-      <table class="min-w-full border-collapse text-center">
-        <thead>
-          <tr class="bg-green-500 text-white">
-            <th class="px-4 py-2">Timestamp</th>
-            <th class="px-4 py-2">Device</th>
-            <th class="px-4 py-2">Suhu1</th>
-            <th class="px-4 py-2">Kelembaban1</th>
-            <th class="px-4 py-2">Suhu2</th>
-            <th class="px-4 py-2">Kelembaban2</th>
-            <th class="px-4 py-2">UV Index</th>
-            <th class="px-4 py-2">Debu</th>
-            <th class="px-4 py-2">Curah Hujan</th>
-            <th class="px-4 py-2">Kecepatan Angin</th>
-            <th class="px-4 py-2">Arah Angin</th>
-            <th class="px-4 py-2">Irradiance</th>
-          </tr>
-        </thead>
-        <tbody id="data-body"></tbody>
-      </table>
+      <div id="histori" class="hidden">
+        <div class="p-6 bg-white rounded-2xl shadow-lg">
+          <h2 class="text-lg font-semibold mb-4 text-gray-800 tracking-tight">Histori Data Sensor</h2>
+          <div class="flex justify-center mb-4">
+            <div class="flex items-center gap-3 bg-white px-5 py-3 rounded-2xl shadow-sm">
+              <input type="date" id="startDate" class="rounded-xl border px-3 py-2 text-sm text-gray-700">
+              <span class="text-gray-400 text-sm">—</span>
+              <input type="date" id="endDate" class="rounded-xl border px-3 py-2 text-sm text-gray-700">
+              <button id="downloadCsvBtn" class="ml-4 rounded-xl bg-blue-100 text-blue-600 px-3 py-2 text-sm font-semibold">
+                Unduh Data
+              </button>
+            </div>
+          </div>
+          <div class="overflow-x-auto rounded-2xl border border-gray-200">
+            <table class="min-w-full border-collapse">
+              <thead>
+                <tr class="bg-gray-50 text-gray-700 text-sm tracking-wide">
+                  <th class="px-4 py-2">Timestamp</th>
+                  <th class="px-4 py-2">Device</th>
+                  <th class="px-4 py-2">Suhu1</th>
+                  <th class="px-4 py-2">Kelembaban1</th>
+                  <th class="px-4 py-2">Suhu2</th>
+                  <th class="px-4 py-2">Kelembaban2</th>
+                  <th class="px-4 py-2">UV Index</th>
+                  <th class="px-4 py-2">Debu</th>
+                  <th class="px-4 py-2">Curah Hujan</th>
+                  <th class="px-4 py-2">Kecepatan Angin</th>
+                  <th class="px-4 py-2">Arah Angin</th>
+                  <th class="px-4 py-2">Irradiance</th>
+                </tr>
+              </thead>
+              <tbody id="data-body" class="text-gray-700 text-sm divide-y divide-gray-200 text-center"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
-  </section>
-      <footer class="mt-auto bg-gray-100 text-gray-700 w-full">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <button class="w-full flex justify-between items-center md:block md:cursor-default"
-                    onclick="toggleFooter(this)">
-              <h3 class="font-bold text-sm text-gray-900">Tentang Kami</h3>
-              <span class="md:hidden">+</span>
-            </button>
-            <ul class="mt-2 space-y-1 text-xs hidden md:block">
-              <li><a href="https://untad.ac.id/" target="_blank" class="text-gray-700 hover:underline">Universitas Tadulako</a></li>
-              <li><a href="https://fatek.untad.ac.id/" target="_blank" class="text-gray-700 hover:underline">Fakultas Teknik</a></li>
-              <li><a href="https://elektro.fatek.untad.ac.id/" target="_blank" class="text-gray-700 hover:underline">Teknik Elektro</a></li>
-            </ul>
-          </div>
-          <div>
-            <button class="w-full flex justify-between items-center md:block md:cursor-default"
-                    onclick="toggleFooter(this)">
-              <h3 class="font-bold text-sm text-gray-900">Layanan</h3>
-              <span class="md:hidden">+</span>
-            </button>
-            <ul class="mt-2 space-y-1 text-xs hidden md:block">
-              <li>Informasi</li>
-              <li>Petunjuk Penggunaan</li>
-            </ul>
-          </div>
-          <div>
-            <button class="w-full flex justify-between items-center md:block md:cursor-default"
-                    onclick="toggleFooter(this)">
-              <h3 class="font-bold text-sm text-gray-900">Kontak</h3>
-              <span class="md:hidden">+</span>
-            </button>
-            <ul class="mt-2 space-y-1 text-xs hidden md:block">
-              <li>Email: info@untad.ac.id</li>
-              <li>Telp: +62 451 123456</li>
-              <li>Alamat: Tondo, Sulawesi Tengah</li>
-            </ul>
-          </div>
+    <footer class="mt-auto bg-gray-100 text-gray-700 w-full">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <button class="w-full flex justify-between items-center md:block md:cursor-default"
+            onclick="toggleFooter(this)">
+            <h3 class="font-bold text-sm text-gray-900">Tentang Kami</h3>
+            <span class="md:hidden">+</span>
+          </button>
+          <ul class="mt-2 space-y-1 text-xs hidden md:block">
+            <li><a href="https://untad.ac.id/" target="_blank" class="text-gray-700 hover:underline">Universitas Tadulako</a></li>
+            <li><a href="https://fatek.untad.ac.id/" target="_blank" class="text-gray-700 hover:underline">Fakultas Teknik</a></li>
+            <li><a href="https://elektro.fatek.untad.ac.id/" target="_blank" class="text-gray-700 hover:underline">Teknik Elektro</a></li>
+          </ul>
         </div>
-        <div class="border-t border-gray-200 py-3 text-center text-sm text-gray-600">
-          © 2025 Universitas Tadulako. Semua hak dilindungi.
+        <div>
+          <button class="w-full flex justify-between items-center md:block md:cursor-default"
+            onclick="toggleFooter(this)">
+            <h3 class="font-bold text-sm text-gray-900">Layanan</h3>
+            <span class="md:hidden">+</span>
+          </button>
+          <ul class="mt-2 space-y-1 text-xs hidden md:block">
+            <li>Informasi</li>
+            <li>Petunjuk Penggunaan</li>
+          </ul>
         </div>
-      </footer>
+        <div>
+          <button class="w-full flex justify-between items-center md:block md:cursor-default"
+                  onclick="toggleFooter(this)">
+            <h3 class="font-bold text-sm text-gray-900">Kontak</h3>
+            <span class="md:hidden">+</span>
+          </button>
+          <ul class="mt-2 space-y-1 text-xs hidden md:block">
+            <li>Email: info@untad.ac.id</li>
+            <li>Telp: +62 451 123456</li>
+            <li>Alamat: Tondo, Sulawesi Tengah</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-200 py-3 text-center text-sm text-gray-600">
+        © 2025 Universitas Tadulako. Semua hak dilindungi.
+      </div>
+    </footer>
   <script>
     const SUPABASE_URL = "https://bryjpjzvsadfvjwqgwak.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyeWpwanp2c2FkZnZqd3Fnd2FrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0MzA0MDUsImV4cCI6MjA3NDAwNjQwNX0.1iWQJhtE02t4JTcutIPkzxmn2qyx-Z7JCKFDQ8itCw8";

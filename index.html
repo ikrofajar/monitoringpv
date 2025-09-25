@@ -331,7 +331,7 @@
       const percent = ((temp - minTemp) / (maxTemp - minTemp)) * 100;
       const offset = arcLength - (percent / 100) * arcLength;
       water.style.strokeDashoffset = offset;
-      valueDisplay.textContent = `${Math.round(temp)}°C`;
+      valueDisplay.textContent = `${temp.toFixed(1)}°C`;
     }
 
     function updateDashboard(d) {

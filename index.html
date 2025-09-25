@@ -371,16 +371,19 @@
     window.addEventListener("load", adjustContentOffset);
     window.addEventListener("resize", adjustContentOffset);
     
-    function toggleFooter(button) {
-      const list = button.nextElementSibling;
-      if (!list) return;
-      list.classList.toggle("hidden");
-      // ubah tanda + jadi -
-      const icon = button.querySelector("span");
-      if (icon) {
-        icon.textContent = list.classList.contains("hidden") ? "+" : "−";
-      }
-    }
+    
   </script>
+    <script>
+      function toggleFooter(button) {
+        const list = button.nextElementSibling;
+        if (!list) return;
+        list.classList.toggle("hidden");
+        // ubah tanda + jadi -
+        const icon = button.querySelector("span");
+        if (icon) {
+          icon.textContent = list.classList.contains("hidden") ? "+" : "−";
+        }
+      }
+    </script>
 </body>
 </html>

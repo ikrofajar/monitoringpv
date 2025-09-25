@@ -6,6 +6,7 @@
   <title>MonitoringPV</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     .param-card {
@@ -344,6 +345,93 @@
       else {kondisi = "Panas";}
       document.getElementById("kondisiCuaca").textContent = kondisi;
     }
+    function initCharts() {
+    if (!window.allCharts) window.allCharts = {};
+
+    const chartConfigs = [
+        {id:'chartSuhu', labels:['Suhu 1','Suhu 2'], colors:[[255,99,132],[255,159,64]]},
+        {id:'chartKelembaban', labels:['Kelembaban 1','Kelembaban 2'], colors:[[54,162,235],[75,192,192]]},
+        {id:'chartUV', labels:['UV Index','UV Intensity'], colors:[[255,206,86],[255,159,64]]},
+        {id:'chartAngin', labels:['Kecepatan Angin'], colors:[[75,192,192]]},
+        {id:'chartRadiasi', labels:['Irradiance'], colors:[[255,159,64]]},
+        {id:'chartDebu', labels:['Debu'], colors:[[153,102,255]]},
+        {id:'chartHujan', labels:['Curah Hujan'], colors:[[54,162,235]]}
+    ];
+
+    const createGradient = (ctx, r, g, b) => {
+        const grad = ctx.createLinearGradient(0,0,0,400);
+        grad.addColorStop(0, `rgba(${r},${g},${b},0.5)`);
+        grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        return grad;
+    };
+
+    chartConfigs.forEach(cfg => {
+        const ctx = document.getElementById(cfg.id).getContext('2d');
+
+        // Hancurkan chart lama jika ada
+        if (window.allCharts[cfg.id]) window.allCharts[cfg.id].destroy();
+
+        const datasets = cfg.labels.map((label,i) => ({
+        label,
+        data:[],
+        borderColor:`rgb(${cfg.colors[i].join(',')})`,
+        backgroundColor:createGradient(ctx,...cfg.colors[i]),
+        fill:true,
+        tension:0.4
+        }));
+
+        window.allCharts[cfg.id] = new Chart(ctx,{
+        type:'line',
+        data:{labels:[], datasets},
+        options:{responsive:true, interaction:{mode:'index',intersect:false}, plugins:{legend:{position:'top'}}}
+        });
+    });
+    }
+
+    // Update chart dengan data baru
+    function updateAllCharts(entry){
+    const timeLabel = new Date(entry.timestamp).toLocaleTimeString('id-ID');
+
+    const charts = [
+        {chart:window.allCharts['chartSuhu'], values:[parseFloat(entry.suhu1), parseFloat(entry.suhu2)]},
+        {chart:window.allCharts['chartKelembaban'], values:[parseFloat(entry.kelembaban1), parseFloat(entry.kelembaban2)]},
+        {chart:window.allCharts['chartUV'], values:[parseFloat(entry.uv_index), parseFloat(entry.uv_intensity)]},
+        {chart:window.allCharts['chartAngin'], values:[parseFloat(entry.kecepatan_angin)]},
+        {chart:window.allCharts['chartRadiasi'], values:[parseFloat(entry.irradiance)]},
+        {chart:window.allCharts['chartDebu'], values:[parseFloat(entry.debu)]},
+        {chart:window.allCharts['chartHujan'], values:[parseFloat(entry.curah_hujan)]}
+    ];
+
+    charts.forEach(c=>{
+        if(c.chart.data.labels.length>=20){
+        c.chart.data.labels.shift();
+        c.chart.data.datasets.forEach((ds,i)=>{
+            if(c.values[i]!==undefined) ds.data.shift();
+        });
+        }
+        if(c.chart.data.labels.length<20) c.chart.data.labels.push(timeLabel);
+        c.chart.data.datasets.forEach((ds,i)=>{
+        if(c.values[i]!==undefined) ds.data.push(c.values[i]);
+        });
+        c.chart.update();
+    });
+
+    // Compass arah angin
+    const compass = document.getElementById('compass');
+    if(compass){
+        const ctx = compass.getContext('2d');
+        const angle = (parseFloat(entry.arah_angin)||0)*Math.PI/180;
+        const center = 180;
+        ctx.clearRect(0,0,360,360);
+        ctx.beginPath();
+        ctx.arc(center,center,150,0,2*Math.PI); ctx.strokeStyle="#ddd"; ctx.lineWidth=2; ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(center,center);
+        ctx.lineTo(center+120*Math.cos(angle-Math.PI/2), center+120*Math.sin(angle-Math.PI/2));
+        ctx.strokeStyle="red"; ctx.lineWidth=5; ctx.stroke();
+        document.getElementById('chartArahAngin').textContent = `Arah: ${entry.arah_angin}°`;
+    }
+    }
 
     function formatRow(d) {
       return `
@@ -373,26 +461,26 @@
       if (error) { console.error("Error loading data:", error); return; }
       dataBody.innerHTML = data.map(d => formatRow(d)).join("");
       if (data.length) updateDashboard(data[0]);
+      data.forEach(updateAllCharts);
     }
-
-    loadData();
     
     supabaseClient.channel('sensor-realtime')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sensor_data' }, payload => {
         const entry = payload.new;
+        updateAllCharts(entry);
         const tr = document.createElement("tr");
-        tr.innerHTML = formatEntryRow(entry);
+        tr.innerHTML = formatRow(entry);
         tr.classList.add("new-entry");
         dataBody.prepend(tr);
 
         setTimeout(() => tr.classList.remove("new-entry"), 5000);
 
         // Batasi row maksimal 50
-        while (dataBody.rows.length > 50) {
-          dataBody.removeChild(dataBody.lastChild);
-        }
-      })
-      .subscribe();
+        while (dataBody.rows.length > 50) dataBody.removeChild(dataBody.lastChild);
+        updateDashboard(entry);
+    }).subscribe();
+      initCharts();
+      loadData();
     function updateClock() {
       const now = new Date();
       const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };

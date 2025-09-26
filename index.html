@@ -82,142 +82,142 @@
   </style>
 </head>
   <body class="bg-white min-h-screen text-gray-900 font-sans flex flex-col">
-  <header class="fixed top-0 left-0 w-full z-50 bg-white/40 backdrop-blur-xl border-b border-white/20 shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16 sm:h-20">
-        <div class="flex items-center gap-3 flex-wrap">
-          <img src="assets/images/drpm.png" alt="Logo DRPM" class="h-14 w-14 sm:h-20 sm:w-20 object-contain">
-          <img src="assets/images/untad.png" alt="Logo Untad" class="h-5 w-5 sm:h-8 sm:w-8 object-contain">
-          <div>
-            <h1 class="text-base sm:text-xl md:text-2xl font-bold text-gray-800 tracking-tight">Sistem Monitoring</h1>
-            <p class="text-xs sm:text-sm text-gray-500">Universitas Tadulako</p>
-          </div>
-        </div>
-        <nav class="hidden md:flex items-center gap-8">
-          <button onclick="showPage('utama', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Utama</button>
-          <button onclick="showPage('grafik', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Grafik</button>
-          <button onclick="showPage('histori', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Histori</button>
-        </nav>
-        <div class="md:hidden">
-          <button id="menuBtn" class="focus:outline-none text-xl text-gray-700 hover:text-blue-600 transition-colors duration-300">☰</button>
-        </div>
-      </div>
-    </div>
-    <div id="mobileMenu" class="hidden md:hidden absolute top-20 inset-x-0 bg-white/95 backdrop-blur-xl border-t border-gray-200 shadow-lg animate-slide-down">
-      <nav class="flex flex-col px-6 py-4 space-y-4">
-        <button onclick="showPage('utama', this)" class="nav-link text-left">Utama</button>
-        <button onclick="showPage('grafik', this)" class="nav-link text-left">Grafik</button>
-        <button onclick="showPage('histori', this)" class="nav-link text-left">Histori</button>
-      </nav>
-    </div>
-  </header>
-  <div class="flex-1 pt-24">
-    <div id="utama">
-      <div class="flex flex-col items-center">
-        <h2 class="text-center font-bold text-blue-600 mb-4">Manajemen Energi Pada Rumah Tropis SSRPV Berbasis Iklim Mikro Menggunakan Pendekatan Eksperimental dan Artificial Neural Network</h2>
-        <div id="container" class="relative w-40 h-40 flex flex-col items-center justify-center">
-          <svg id="hoseSvg" width="100%" height="100%" viewBox="0 0 200 200" class="absolute top-0 left-0">
-            <circle id="water" cx="100" cy="100" r="60"
-              stroke="deepskyblue" stroke-width="15" fill="none"
-              stroke-linecap="round"
-              transform="rotate(140 100 100)" />
-          </svg>
-          <div id="emoji" class="text-4xl text-orange-500 z-10"><i class="fas fa-temperature-half"></i></div>
-          <div id="valueDisplay" class="font-bold text-lg z-10">-</div>
-          <div id="kondisiCuaca" class="text-sm text-gray-600 z-10 mt-1">-</div>
-          <span id="clock" class="text-sm text-gray-500 mt-1 z-10"></span>
-          <h3 class="relative z-50">
-            <a href="https://maps.app.goo.gl/QdtRZ6RYMNWyHMBPA"
-              target="_blank"
-              id="rumahPenelitian"
-              class="text-blue-600 hover:underline">
-              <i class="fas fa-map-marker-alt text-red-500"></i> Rumah Penelitian
-            </a>
-          </h3>
-        </div>
-      </div>
-      <div class="flex flex-wrap justify-center gap-4 p-4">
-        <div class="param-card">
-          <div class="mb-1"><i class="fas fa-thermometer-half text-orange-400"></i></div>
-          <div class="text-sm sm:text-base md:text-lg font-semibold" id="suhu1">- °C</div>
-          <div class="text-xs sm:text-sm text-gray-500">Suhu Mono</div>
-        </div>
-        <div class="param-card">
-          <div class="mb-1"><i class="fas fa-tint text-blue-100"></i></div>
-          <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban1">- %</div>
-          <div class="text-xs sm:text-sm text-gray-500">Kelembapan 1</div>
-        </div>
-        <div class="param-card">
-          <div class="mb-1"><i class="fas fa-thermometer-half text-orange-500"></i></div>
-          <div class="text-sm sm:text-base md:text-lg font-semibold" id="suhu2">- °C</div>
-          <div class="text-xs sm:text-sm text-gray-500">Suhu Poly</div>
-        </div>
-        <div class="param-card">
-          <div class="mb-1"><i class="fas fa-tint text-blue-200"></i></div>
-          <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban2">- %</div>
-          <div class="text-xs sm:text-sm text-gray-500">Kelembapan 2</div>
-        </div>
-        <div class="param-card">
-          <div class="mb-1"><i class="fas fa-wind text-gray-200"></i></div>
-          <div class="text-sm sm:text-base md:text-lg font-semibold" id="kecepatan_angin">-</div>
-          <div class="text-xs sm:text-sm text-gray-500">Kecepatan Angin</div>
-        </div>
-        <div class="param-card">
-          <div class="mb-1"><i class="fas fa-compass text-gray-300"></i></div>
-          <div class="text-sm sm:text-base md:text-lg font-semibold" id="arah_angin">-</div>
-          <div class="text-xs sm:text-sm text-gray-500">Arah Angin</div>
-        </div>
-        <div class="param-card">
-          <div class="mb-1"><i class="fas fa-sun text-yellow-300"></i></div>
-          <div class="text-sm sm:text-base md:text-lg font-semibold" id="uv_index">-</div>
-          <div class="text-xs sm:text-sm text-gray-500">UV Index</div>
-        </div>
-        <div class="param-card">
-          <div class="mb-1"><i class="fas fa-sun text-yellow-400"></i></div>
-          <div class="text-sm sm:text-base md:text-lg font-semibold" id="uv_intensity">-</div>
-          <div class="text-xs sm:text-sm text-gray-500">UV Intensity</div>
-        </div>
-        <div class="param-card">
-          <div class="mb-1"><i class="fas fa-sun text-yellow-500"></i></div>
-          <div class="text-sm sm:text-base md:text-lg font-semibold" id="irradiance">-</div>
-          <div class="text-xs sm:text-sm text-gray-500">Radiasi Matahari</div>
-        </div>
-        <div class="param-card">
-          <div class="mb-1"><i class="fas fa-smog text-gray-400"></i></div>
-          <div class="text-sm sm:text-base md:text-lg font-semibold" id="debu">- µg/m³</div>
-          <div class="text-xs sm:text-sm text-gray-500">Debu</div>
-        </div>
-        <div class="param-card">
-          <div class="mb-1"><i class="fas fa-cloud-showers-heavy text-blue-400"></i></div>
-          <div class="text-sm sm:text-base md:text-lg font-semibold" id="curah_hujan">-</div>
-          <div class="text-xs sm:text-sm text-gray-500">Curah Hujan</div>
-        </div>
-      </div>
-    </div>
-    <div id="grafik" class="hidden">
-      <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="p-4 bg-white rounded-2xl shadow-lg">
-          <h2 class="text-lg font-semibold mb-2 text-gray-800">Suhu</h2>
-          <canvas id="chartSuhu"></canvas>
-        </div>
-        <div class="p-4 bg-white rounded-2xl shadow-lg">
-          <h2 class="text-lg font-semibold mb-2 text-gray-800">Kelembaban</h2>
-          <canvas id="chartKelembaban"></canvas>
-        </div>
-        <div class="p-4 bg-white rounded-2xl shadow-lg">
-          <h2 class="text-lg font-semibold mb-2 text-gray-800">Kecepatan Angin</h2>
-            <canvas id="chartAngin"></canvas>
-          </div>
-          <div class="p-4 bg-white rounded-2xl shadow-lg flex flex-col items-center">
-            <h2 class="text-xl font-semibold mb-4 text-gray-800">Arah Angin</h2>
-            <canvas id="compass" width="360" height="360"></canvas>
-            <div id="windInfo" class="mt-4 text-center">
-              <p class="text-lg font-medium text-gray-900" id="chartArahAngin">-</p>
+    <header class="fixed top-0 left-0 w-full z-50 bg-white/40 backdrop-blur-xl border-b border-white/20 shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16 sm:h-20">
+          <div class="flex items-center gap-3 flex-wrap">
+            <img src="assets/images/drpm.png" alt="Logo DRPM" class="h-14 w-14 sm:h-20 sm:w-20 object-contain">
+            <img src="assets/images/untad.png" alt="Logo Untad" class="h-5 w-5 sm:h-8 sm:w-8 object-contain">
+            <div>
+              <h1 class="text-base sm:text-xl md:text-2xl font-bold text-gray-800 tracking-tight">Sistem Monitoring</h1>
+              <p class="text-xs sm:text-sm text-gray-500">Universitas Tadulako</p>
             </div>
           </div>
+          <nav class="hidden md:flex items-center gap-8">
+            <button onclick="showPage('utama', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Utama</button>
+            <button onclick="showPage('grafik', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Grafik</button>
+            <button onclick="showPage('histori', this)" class="nav-link px-3 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">Histori</button>
+          </nav>
+          <div class="md:hidden">
+            <button id="menuBtn" class="focus:outline-none text-xl text-gray-700 hover:text-blue-600 transition-colors duration-300">☰</button>
+          </div>
+        </div>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden absolute top-20 inset-x-0 bg-white/95 backdrop-blur-xl border-t border-gray-200 shadow-lg animate-slide-down">
+        <nav class="flex flex-col px-6 py-4 space-y-4">
+          <button onclick="showPage('utama', this)" class="nav-link text-left">Utama</button>
+          <button onclick="showPage('grafik', this)" class="nav-link text-left">Grafik</button>
+          <button onclick="showPage('histori', this)" class="nav-link text-left">Histori</button>
+        </nav>
+      </div>
+    </header>
+    <div class="flex-1 pt-24">
+      <div id="utama">
+        <div class="flex flex-col items-center">
+          <h2 class="text-center font-bold text-blue-600 mb-4">Manajemen Energi Pada Rumah Tropis SSRPV Berbasis Iklim Mikro Menggunakan Pendekatan Eksperimental dan Artificial Neural Network</h2>
+          <div id="container" class="relative w-40 h-40 flex flex-col items-center justify-center">
+            <svg id="hoseSvg" width="100%" height="100%" viewBox="0 0 200 200" class="absolute top-0 left-0">
+              <circle id="water" cx="100" cy="100" r="60"
+                stroke="deepskyblue" stroke-width="15" fill="none"
+                stroke-linecap="round"
+                transform="rotate(140 100 100)" />
+            </svg>
+            <div id="emoji" class="text-4xl text-orange-500 z-10"><i class="fas fa-temperature-half"></i></div>
+            <div id="valueDisplay" class="font-bold text-lg z-10">-</div>
+            <div id="kondisiCuaca" class="text-sm text-gray-600 z-10 mt-1">-</div>
+            <span id="clock" class="text-sm text-gray-500 mt-1 z-10"></span>
+            <h3 class="relative z-50">
+              <a href="https://maps.app.goo.gl/QdtRZ6RYMNWyHMBPA"
+                target="_blank"
+                id="rumahPenelitian"
+                class="text-blue-600 hover:underline">
+                <i class="fas fa-map-marker-alt text-red-500"></i> Rumah Penelitian
+              </a>
+            </h3>
+          </div>
+        </div>
+        <div class="flex flex-wrap justify-center gap-4 p-4">
+          <div class="param-card">
+            <div class="mb-1"><i class="fas fa-thermometer-half text-orange-400"></i></div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="suhu1">- °C</div>
+            <div class="text-xs sm:text-sm text-gray-500">Suhu Mono</div>
+          </div>
+          <div class="param-card">
+            <div class="mb-1"><i class="fas fa-tint text-blue-100"></i></div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban1">- %</div>
+            <div class="text-xs sm:text-sm text-gray-500">Kelembapan 1</div>
+          </div>
+          <div class="param-card">
+            <div class="mb-1"><i class="fas fa-thermometer-half text-orange-500"></i></div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="suhu2">- °C</div>
+            <div class="text-xs sm:text-sm text-gray-500">Suhu Poly</div>
+          </div>
+          <div class="param-card">
+            <div class="mb-1"><i class="fas fa-tint text-blue-200"></i></div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban2">- %</div>
+            <div class="text-xs sm:text-sm text-gray-500">Kelembapan 2</div>
+          </div>
+          <div class="param-card">
+            <div class="mb-1"><i class="fas fa-wind text-gray-200"></i></div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="kecepatan_angin">-</div>
+            <div class="text-xs sm:text-sm text-gray-500">Kecepatan Angin</div>
+          </div>
+          <div class="param-card">
+            <div class="mb-1"><i class="fas fa-compass text-gray-300"></i></div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="arah_angin">-</div>
+            <div class="text-xs sm:text-sm text-gray-500">Arah Angin</div>
+          </div>
+          <div class="param-card">
+            <div class="mb-1"><i class="fas fa-sun text-yellow-300"></i></div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="uv_index">-</div>
+            <div class="text-xs sm:text-sm text-gray-500">UV Index</div>
+          </div>
+          <div class="param-card">
+            <div class="mb-1"><i class="fas fa-sun text-yellow-400"></i></div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="uv_intensity">-</div>
+            <div class="text-xs sm:text-sm text-gray-500">UV Intensity</div>
+          </div>
+          <div class="param-card">
+            <div class="mb-1"><i class="fas fa-sun text-yellow-500"></i></div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="irradiance">-</div>
+            <div class="text-xs sm:text-sm text-gray-500">Radiasi Matahari</div>
+          </div>
+          <div class="param-card">
+            <div class="mb-1"><i class="fas fa-smog text-gray-400"></i></div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="debu">- µg/m³</div>
+            <div class="text-xs sm:text-sm text-gray-500">Debu</div>
+          </div>
+          <div class="param-card">
+            <div class="mb-1"><i class="fas fa-cloud-showers-heavy text-blue-400"></i></div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="curah_hujan">-</div>
+            <div class="text-xs sm:text-sm text-gray-500">Curah Hujan</div>
+          </div>
+        </div>
+      </div>
+      <div id="grafik" class="hidden">
+        <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="p-4 bg-white rounded-2xl shadow-lg">
-            <h2 class="text-lg font-semibold mb-2 text-gray-800">Sinar UV</h2>
-            <canvas id="chartUV"></canvas>
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">Suhu</h2>
+            <canvas id="chartSuhu"></canvas>
+          </div>
+          <div class="p-4 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">Kelembaban</h2>
+            <canvas id="chartKelembaban"></canvas>
+          </div>
+          <div class="p-4 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">Kecepatan Angin</h2>
+              <canvas id="chartAngin"></canvas>
+            </div>
+            <div class="p-4 bg-white rounded-2xl shadow-lg flex flex-col items-center">
+              <h2 class="text-xl font-semibold mb-4 text-gray-800">Arah Angin</h2>
+              <canvas id="compass" width="360" height="360"></canvas>
+              <div id="windInfo" class="mt-4 text-center">
+                <p class="text-lg font-medium text-gray-900" id="chartArahAngin">-</p>
+              </div>
+            </div>
+            <div class="p-4 bg-white rounded-2xl shadow-lg">
+              <h2 class="text-lg font-semibold mb-2 text-gray-800">Sinar UV</h2>
+              <canvas id="chartUV"></canvas>
           </div>
           <div class="p-4 bg-white rounded-2xl shadow-lg">
             <h2 class="text-lg font-semibold mb-2 text-gray-800">Radiasi Matahari</h2>
@@ -310,7 +310,7 @@
         © 2025 Universitas Tadulako. Semua hak dilindungi.
       </div>
     </footer>
-  <script>
+    <script>
     const SUPABASE_URL = "https://bryjpjzvsadfvjwqgwak.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyeWpwanp2c2FkZnZqd3Fnd2FrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0MzA0MDUsImV4cCI6MjA3NDAwNjQwNX0.1iWQJhtE02t4JTcutIPkzxmn2qyx-Z7JCKFDQ8itCw8";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

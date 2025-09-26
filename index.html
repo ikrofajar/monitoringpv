@@ -419,8 +419,21 @@
         });
     });
 }
+    function arahAnginToRadian(text) {
+  const map = {
+    "Utara": 0,
+    "Timur Laut": 45,
+    "Timur": 90,
+    "Tenggara": 135,
+    "Selatan": 180,
+    "Barat Daya": 225,
+    "Barat": 270,
+    "Barat Laut": 315
+  };
+  const deg = map[text] !== undefined ? map[text] : 0;
+  return deg * Math.PI / 180; // hasil radian
+}
 
-    // Update chart dengan data baru
     function updateAllCharts(entry){
     const timeLabel = new Date(entry.timestamp).toLocaleTimeString('id-ID');
 
@@ -452,7 +465,7 @@
     const compass = document.getElementById('compass');
     if(compass){
         const ctx = compass.getContext('2d');
-        const angle = (parseFloat(entry.arah_angin)||0)*Math.PI/180;
+        const angle = arahAnginToRadian(entry.arah_angin);
         const center = 180;
         ctx.clearRect(0,0,360,360);
         ctx.beginPath();
@@ -493,7 +506,7 @@
         ctx.moveTo(center, center);
         ctx.lineTo(center + 120*Math.cos(angle-Math.PI/2), center + 120*Math.sin(angle-Math.PI/2));
       ctx.stroke()
-        document.getElementById('chartArahAngin').textContent = `Arah: ${entry.arah_angin}°`;
+        document.getElementById('chartArahAngin').textContent = `Arah: ${entry.arah_angin}`;
     }
     }
 

@@ -461,53 +461,88 @@
         c.chart.update();
     });
 
-    // Compass arah angin
-    const compass = document.getElementById('compass');
-    if(compass){
-        const ctx = compass.getContext('2d');
-        const angle = arahAnginToRadian(entry.arah_angin);
-        const center = 180;
-        ctx.clearRect(0,0,360,360);
-        ctx.beginPath();
-        ctx.arc(center,center,150,0,2*Math.PI);
-        ctx.strokeStyle="#bbb";
-        ctx.lineWidth=2;
-        ctx.shadowColor='rgba(0,0,0,0.05)';
-        ctx.shadowBlur=15;
-        ctx.stroke();
+      // Compass arah angin
+const compass = document.getElementById('compass');
+if(compass){
+    const ctx = compass.getContext('2d');
+    const angle = arahAnginToRadian(entry.arah_angin);
+    const center = 180;
+    ctx.clearRect(0,0,360,360);
 
-        const directions = ['U','TL','T','TG','S','BD','B','BL'];
-        directions.forEach((dir,i)=>{
-            const dirAngle = i * 45 * Math.PI/180;
-            const x = center + (150+20) * Math.cos(dirAngle - Math.PI/2);
-            const y = center + (150+20) * Math.sin(dirAngle - Math.PI/2);
-            ctx.fillStyle="#333";
-            ctx.font="bold 14px 'Arial', sans-serif";
-            ctx.textAlign="center";
-            ctx.textBaseline="middle";
-            ctx.fillText(dir,x,y);
-        });
+    // Background lingkaran dengan gradasi radial
+    const gradient = ctx.createRadialGradient(center, center, 50, center, center, 180);
+    gradient.addColorStop(0, "#f9f9f9");
+    gradient.addColorStop(1, "#e0e0e0");
+    ctx.beginPath();
+    ctx.arc(center, center, 170, 0, 2*Math.PI);
+    ctx.fillStyle = gradient;
+    ctx.fill();
 
-        ctx.beginPath();
-        ctx.moveTo(center,center);
-        ctx.lineTo(center+120*Math.cos(angle-Math.PI/2), center+120*Math.sin(angle-Math.PI/2));
-        ctx.strokeStyle = '#ff4d4f';
-        ctx.lineWidth = 8;
-        ctx.lineCap = 'round';
-        ctx.shadowColor = 'rgba(255,77,79,0.4)';
-        ctx.shadowBlur = 15;
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(center, center, 12, 0, 2*Math.PI);
-        ctx.fillStyle = '#ff4d4f';
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = 'rgba(0,0,0,0.2)';
-        ctx.fill();
-        ctx.moveTo(center, center);
-        ctx.lineTo(center + 120*Math.cos(angle-Math.PI/2), center + 120*Math.sin(angle-Math.PI/2));
-      ctx.stroke()
-        document.getElementById('chartArahAngin').textContent = `Arah: ${entry.arah_angin}`;
-    }
+    // Lingkaran luar elegan
+    ctx.beginPath();
+    ctx.arc(center, center, 170, 0, 2*Math.PI);
+    ctx.strokeStyle = "rgba(0,0,0,0.3)";
+    ctx.lineWidth = 8;
+    ctx.stroke();
+
+    // Lingkaran dalam tipis
+    ctx.beginPath();
+    ctx.arc(center, center, 120, 0, 2*Math.PI);
+    ctx.strokeStyle = "rgba(0,0,0,0.1)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 8]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Label arah
+    const directions = [
+        {label:'U', angle:0},
+        {label:'TL', angle:45},
+        {label:'T', angle:90},
+        {label:'TG', angle:135},
+        {label:'S', angle:180},
+        {label:'BD', angle:225},
+        {label:'B', angle:270},
+        {label:'BL', angle:315},
+    ];
+    directions.forEach(d=>{
+        const dirAngle = d.angle * Math.PI/180;
+        const x = center + 140 * Math.cos(dirAngle - Math.PI/2);
+        const y = center + 140 * Math.sin(dirAngle - Math.PI/2);
+        ctx.fillStyle = (["U","T","S","B"].includes(d.label)) ? "#ff4d4f" : "#333";
+        ctx.font = (["U","T","S","B"].includes(d.label)) 
+                   ? "bold 20px 'Arial', sans-serif" 
+                   : "14px 'Arial', sans-serif";
+        ctx.textAlign="center";
+        ctx.textBaseline="middle";
+        ctx.fillText(d.label,x,y);
+    });
+
+    // Jarum arah angin dengan gradasi
+    const needleGradient = ctx.createLinearGradient(center, center, center + 120*Math.cos(angle-Math.PI/2), center + 120*Math.sin(angle-Math.PI/2));
+    needleGradient.addColorStop(0, "#ff6b6b");
+    needleGradient.addColorStop(1, "#b30000");
+    ctx.beginPath();
+    ctx.moveTo(center, center);
+    ctx.lineTo(center+120*Math.cos(angle-Math.PI/2), center+120*Math.sin(angle-Math.PI/2));
+    ctx.strokeStyle = needleGradient;
+    ctx.lineWidth = 8;
+    ctx.lineCap = 'round';
+    ctx.shadowColor = 'rgba(255,0,0,0.4)';
+    ctx.shadowBlur = 20;
+    ctx.stroke();
+
+    // Titik pusat jarum
+    ctx.beginPath();
+    ctx.arc(center, center, 15, 0, 2*Math.PI);
+    ctx.fillStyle = "#ff4d4f";
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = 'rgba(0,0,0,0.3)';
+    ctx.fill();
+
+    // Update teks arah
+    document.getElementById('chartArahAngin').textContent = `Arah: ${entry.arah_angin}`;
+}
     }
 
     function formatRow(d) {

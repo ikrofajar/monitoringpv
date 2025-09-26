@@ -248,18 +248,18 @@
             <table class="min-w-full border-collapse">
               <thead>
                 <tr class="bg-gray-50 text-gray-700 text-sm tracking-wide">
-                  <th class="px-4 py-2">Timestamp</th>
-                  <th class="px-4 py-2">Device</th>
+                  <th class="px-4 py-2">Waktu</th>
                   <th class="px-4 py-2">Suhu1</th>
                   <th class="px-4 py-2">Kelembaban1</th>
                   <th class="px-4 py-2">Suhu2</th>
                   <th class="px-4 py-2">Kelembaban2</th>
                   <th class="px-4 py-2">UV Index</th>
+                  <th class="px-4 py-2">UV Intensity</th>
                   <th class="px-4 py-2">Debu</th>
                   <th class="px-4 py-2">Curah Hujan</th>
                   <th class="px-4 py-2">Kecepatan Angin</th>
                   <th class="px-4 py-2">Arah Angin</th>
-                  <th class="px-4 py-2">Irradiance</th>
+                  <th class="px-4 py-2">Radiasi Matahari</th>
                 </tr>
               </thead>
               <tbody id="data-body" class="text-gray-700 text-sm divide-y divide-gray-200 text-center"></tbody>
@@ -376,10 +376,7 @@
 
     chartConfigs.forEach(cfg => {
         const ctx = document.getElementById(cfg.id).getContext('2d');
-
-        // Hancurkan chart lama jika ada
         if (window.allCharts[cfg.id]) window.allCharts[cfg.id].destroy();
-
         const datasets = cfg.labels.map((label,i) => ({
             label,
             data:[],
@@ -438,13 +435,13 @@
     ];
 
     charts.forEach(c=>{
-        if(c.chart.data.labels.length>=20){
+        if(c.chart.data.labels.length>=10){
         c.chart.data.labels.shift();
         c.chart.data.datasets.forEach((ds,i)=>{
             if(c.values[i]!==undefined) ds.data.shift();
         });
         }
-        if(c.chart.data.labels.length<20) c.chart.data.labels.push(timeLabel);
+        if(c.chart.data.labels.length<10) c.chart.data.labels.push(timeLabel);
         c.chart.data.datasets.forEach((ds,i)=>{
         if(c.values[i]!==undefined) ds.data.push(c.values[i]);
         });
@@ -503,13 +500,13 @@
     function formatRow(d) {
       return `
         <tr class="bg-white">
-          <td class="border px-2 py-1">${d.timestamp}</td>
-          <td class="border px-2 py-1">${d.device_id}</td>
+          <td class="border px-2 py-1">${d.waktu}</td>
           <td class="border px-2 py-1">${d.suhu1}</td>
           <td class="border px-2 py-1">${d.kelembaban1}</td>
           <td class="border px-2 py-1">${d.suhu2}</td>
           <td class="border px-2 py-1">${d.kelembaban2}</td>
           <td class="border px-2 py-1">${d.uv_index}</td>
+          <td class="border px-2 py-1">${d.uv_intensity}</td>
           <td class="border px-2 py-1">${d.debu}</td>
           <td class="border px-2 py-1">${d.curah_hujan}</td>
           <td class="border px-2 py-1">${d.kecepatan_angin}</td>
@@ -539,10 +536,7 @@
         tr.innerHTML = formatRow(entry);
         tr.classList.add("new-entry");
         dataBody.prepend(tr);
-
         setTimeout(() => tr.classList.remove("new-entry"), 5000);
-
-        // Batasi row maksimal 50
         while (dataBody.rows.length > 50) dataBody.removeChild(dataBody.lastChild);
         updateDashboard(entry);
     }).subscribe();

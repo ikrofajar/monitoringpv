@@ -145,7 +145,7 @@
           <div class="param-card">
             <div class="mb-1"><i class="fas fa-tint text-blue-100"></i></div>
             <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban1">- %</div>
-            <div class="text-xs sm:text-sm text-gray-500">Kelembapan 1</div>
+            <div class="text-xs sm:text-sm text-gray-500">RH Mono</div>
           </div>
           <div class="param-card">
             <div class="mb-1"><i class="fas fa-thermometer-half text-orange-500"></i></div>
@@ -155,11 +155,11 @@
           <div class="param-card">
             <div class="mb-1"><i class="fas fa-tint text-blue-200"></i></div>
             <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban2">- %</div>
-            <div class="text-xs sm:text-sm text-gray-500">Kelembapan 2</div>
+            <div class="text-xs sm:text-sm text-gray-500">RH Poly</div>
           </div>
           <div class="param-card">
             <div class="mb-1"><i class="fas fa-wind text-gray-200"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="kecepatan_angin">-</div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="kecepatan_angin">- m/s</div>
             <div class="text-xs sm:text-sm text-gray-500">Kecepatan Angin</div>
           </div>
           <div class="param-card">
@@ -189,7 +189,7 @@
           </div>
           <div class="param-card">
             <div class="mb-1"><i class="fas fa-cloud-showers-heavy text-blue-400"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="curah_hujan">-</div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="curah_hujan">- mm</div>
             <div class="text-xs sm:text-sm text-gray-500">Curah Hujan</div>
           </div>
         </div>
@@ -249,10 +249,10 @@
               <thead>
                 <tr class="bg-gray-50 text-gray-700 text-sm tracking-wide">
                   <th class="px-4 py-2">Waktu</th>
-                  <th class="px-4 py-2">Suhu1</th>
-                  <th class="px-4 py-2">Kelembaban1</th>
-                  <th class="px-4 py-2">Suhu2</th>
-                  <th class="px-4 py-2">Kelembaban2</th>
+                  <th class="px-4 py-2">Suhu Mono</th>
+                  <th class="px-4 py-2">RH Mono</th>
+                  <th class="px-4 py-2">Suhu Poly</th>
+                  <th class="px-4 py-2">RH Poly</th>
                   <th class="px-4 py-2">UV Index</th>
                   <th class="px-4 py-2">UV Intensity</th>
                   <th class="px-4 py-2">Debu</th>
@@ -340,9 +340,9 @@
       document.getElementById("kelembaban2").textContent = d.kelembaban2 + " %";
       document.getElementById("uv_index").textContent = d.uv_index;
       document.getElementById("uv_intensity").textContent = d.uv_intensity;
-      document.getElementById("debu").textContent = d.debu;
-      document.getElementById("curah_hujan").textContent = d.curah_hujan;
-      document.getElementById("kecepatan_angin").textContent = d.kecepatan_angin;
+      document.getElementById("debu").textContent = d.debu + " µg/m³";
+      document.getElementById("curah_hujan").textContent = d.curah_hujan + " mm";
+      document.getElementById("kecepatan_angin").textContent = d.kecepatan_angin + " m/s";
       document.getElementById("arah_angin").textContent = d.arah_angin;
       document.getElementById("irradiance").textContent = d.irradiance;
       let rataSuhu = ((d.suhu1 + d.suhu2) / 2).toFixed(1);

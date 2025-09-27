@@ -210,7 +210,7 @@
           </div>
           <div class="p-4 bg-white rounded-2xl shadow-lg flex flex-col items-center">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">Arah Angin</h2>
-            <canvas id="compass" width="200" height="200"></canvas>
+            <canvas id="compass" width="250" height="250"></canvas>
             <div id="windInfo" class="mt-4 text-center">
               <p class="text-lg font-medium text-gray-900" id="chartArahAngin">-</p>
             </div>
@@ -459,10 +459,10 @@
         if(compass){
           const ctx = compass.getContext('2d');
           const angle = arahAnginToRadian(entry.arah_angin);
-          const center = 100;
-          ctx.clearRect(0,0,200,200);
+          const center = 125;
+          ctx.clearRect(0,0,250,250);
           ctx.beginPath();
-          ctx.arc(center,center,80,0,2*Math.PI);
+          ctx.arc(center,center,100,0,2*Math.PI);
           ctx.strokeStyle="#bbb";
           ctx.lineWidth=2;
           ctx.shadowColor='rgba(0,0,0,0.05)';
@@ -471,31 +471,31 @@
           const directions = ['U','TL','T','TG','S','BD','B','BL'];
           directions.forEach((dir,i)=>{
             const dirAngle = i * 45 * Math.PI/180;
-            const x = center + (80+10) * Math.cos(dirAngle - Math.PI/2);
-            const y = center + (80+10) * Math.sin(dirAngle - Math.PI/2);
+            const x = center + (100+15) * Math.cos(dirAngle - Math.PI/2);
+            const y = center + (100+15) * Math.sin(dirAngle - Math.PI/2);
             ctx.fillStyle="#333";
-            ctx.font="bold 10px 'Arial', sans-serif";
+            ctx.font="bold 12px 'Arial', sans-serif";
             ctx.textAlign="center";
             ctx.textBaseline="middle";
             ctx.fillText(dir,x,y);
           });
           ctx.beginPath();
           ctx.moveTo(center,center);
-          ctx.lineTo(center+60*Math.cos(angle-Math.PI/2), center+60*Math.sin(angle-Math.PI/2));
+          ctx.lineTo(center+75*Math.cos(angle-Math.PI/2), center+75*Math.sin(angle-Math.PI/2));
           ctx.strokeStyle = '#ff4d4f';
-          ctx.lineWidth = 5;
+          ctx.lineWidth = 6;
           ctx.lineCap = 'round';
           ctx.shadowColor = 'rgba(255,77,79,0.4)';
           ctx.shadowBlur = 15;
           ctx.stroke();
           ctx.beginPath();
-          ctx.arc(center, center, 8, 0, 2*Math.PI);
+          ctx.arc(center, center, 10, 0, 2*Math.PI);
           ctx.fillStyle = '#ff4d4f';
           ctx.shadowBlur = 10;
           ctx.shadowColor = 'rgba(0,0,0,0.2)';
           ctx.fill();
           ctx.moveTo(center, center);
-          ctx.lineTo(center + 60*Math.cos(angle-Math.PI/2), center + 60*Math.sin(angle-Math.PI/2));
+          ctx.lineTo(center + 75*Math.cos(angle-Math.PI/2), center + 75*Math.sin(angle-Math.PI/2));
           ctx.stroke()
             document.getElementById('chartArahAngin').textContent = `Arah: ${entry.arah_angin}`;
         }

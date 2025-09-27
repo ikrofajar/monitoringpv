@@ -206,18 +206,18 @@
           </div>
           <div class="p-4 bg-white rounded-2xl shadow-lg">
             <h2 class="text-lg font-semibold mb-2 text-gray-800">Kecepatan Angin</h2>
-              <canvas id="chartAngin"></canvas>
+            <canvas id="chartAngin"></canvas>
+          </div>
+          <div class="p-4 bg-white rounded-2xl shadow-lg flex flex-col items-center">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Arah Angin</h2>
+            <canvas id="compass" width="200" height="200"></canvas>
+            <div id="windInfo" class="mt-4 text-center">
+              <p class="text-lg font-medium text-gray-900" id="chartArahAngin">-</p>
             </div>
-            <div class="p-4 bg-white rounded-2xl shadow-lg flex flex-col items-center">
-              <h2 class="text-xl font-semibold mb-4 text-gray-800">Arah Angin</h2>
-              <canvas id="compass" width="360" height="360"></canvas>
-              <div id="windInfo" class="mt-4 text-center">
-                <p class="text-lg font-medium text-gray-900" id="chartArahAngin">-</p>
-              </div>
-            </div>
-            <div class="p-4 bg-white rounded-2xl shadow-lg">
-              <h2 class="text-lg font-semibold mb-2 text-gray-800">Sinar UV</h2>
-              <canvas id="chartUV"></canvas>
+          </div>
+          <div class="p-4 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">Sinar UV</h2>
+            <canvas id="chartUV"></canvas>
           </div>
           <div class="p-4 bg-white rounded-2xl shadow-lg">
             <h2 class="text-lg font-semibold mb-2 text-gray-800">Radiasi Matahari</h2>
@@ -354,9 +354,9 @@
       document.getElementById("kondisiCuaca").textContent = kondisi;
     }
     function initCharts() {
-        if (!window.allCharts) window.allCharts = {};
-
-    const chartConfigs = [
+      if (!window.allCharts) window.allCharts = {};
+      
+      const chartConfigs = [
         {id:'chartSuhu', labels:['Suhu 1','Suhu 2'], colors:[[255,99,132],[255,159,64]]},
         {id:'chartKelembaban', labels:['Kelembaban 1','Kelembaban 2'], colors:[[54,162,235],[75,192,192]]},
         {id:'chartUV', labels:['UV Index','UV Intensity'], colors:[[255,206,86],[255,159,64]]},
@@ -364,150 +364,142 @@
         {id:'chartRadiasi', labels:['Irradiance'], colors:[[255,159,64]]},
         {id:'chartDebu', labels:['Debu'], colors:[[153,102,255]]},
         {id:'chartHujan', labels:['Curah Hujan'], colors:[[54,162,235]]}
-    ];
-
-    const createGradient = (ctx, r, g, b) => {
+      ];
+      const createGradient = (ctx, r, g, b) => {
         const grad = ctx.createLinearGradient(0, 0 , 0, ctx.canvas.height);
         grad.addColorStop(0, `rgba(${r},${g},${b},0.4)`);
         grad.addColorStop(0.5, `rgba(${r},${g},${b},0.15)`);
         grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
         return grad;
-    };
-
-    chartConfigs.forEach(cfg => {
+      };
+      chartConfigs.forEach(cfg => {
         const ctx = document.getElementById(cfg.id).getContext('2d');
         if (window.allCharts[cfg.id]) window.allCharts[cfg.id].destroy();
         const datasets = cfg.labels.map((label,i) => ({
-            label,
-            data:[],
-            borderColor:`rgb(${cfg.colors[i].join(',')})`,
-            backgroundColor:createGradient(ctx,...cfg.colors[i]),
-            fill:true,
-            tension:0.35, // lebih smooth
-            pointRadius:5,
-            pointHoverRadius:7,
-            pointBackgroundColor:`rgb(${cfg.colors[i].join(',')})`,
-            pointHoverBackgroundColor:'#fff',
-            borderWidth:3,
-            shadowOffsetX:0, // Shadow untuk line (modern)
-            shadowOffsetY:4,
-            shadowBlur:6,
-            shadowColor:`rgba(0,0,0,0.1)`
+          label,
+          data:[],
+          borderColor:`rgb(${cfg.colors[i].join(',')})`,
+          backgroundColor:createGradient(ctx,...cfg.colors[i]),
+          fill:true,
+          tension:0.35, // lebih smooth
+          pointRadius:5,
+          pointHoverRadius:7,
+          pointBackgroundColor:`rgb(${cfg.colors[i].join(',')})`,
+          pointHoverBackgroundColor:'#fff',
+          borderWidth:3,
+          shadowOffsetX:0, // Shadow untuk line (modern)
+          shadowOffsetY:4,
+          shadowBlur:6,
+          shadowColor:`rgba(0,0,0,0.1)`
         }));
-
         window.allCharts[cfg.id] = new Chart(ctx,{
-        type:'line',
-        data:{labels:[], datasets},
-        options:{
+          type:'line',
+          data:{labels:[], datasets},
+          options:{
             responsive:true,
             interaction:{mode:'index',intersect:false},
             plugins:{
-                legend:{position:'top', labels:{boxWidth:12, padding:15, usePointStyle:true}},
-                    tooltip:{
-                        backgroundColor:'rgba(0,0,0,0.7)',
-                        titleColor:'#fff',
-                        bodyColor:'#fff',
-                        padding:10,
-                        cornerRadius:8
-                    }
-                },
-                scales:{
-                    x:{grid:{display:false}, ticks:{color:'#666', padding:10}},
-                    y:{grid:{color:'rgba(200,200,200,0.1)'}, ticks:{color:'#666', padding:10}}
-                }
+              legend:{position:'top', labels:{boxWidth:12, padding:15, usePointStyle:true}},
+              tooltip:{
+                backgroundColor:'rgba(0,0,0,0.7)',
+                titleColor:'#fff',
+                bodyColor:'#fff',
+                padding:10,
+                cornerRadius:8
+              }
+            },
+            scales:{
+              x:{grid:{display:false}, ticks:{color:'#666', padding:10}},
+              y:{grid:{color:'rgba(200,200,200,0.1)'}, ticks:{color:'#666', padding:10}}
             }
+          }
         });
-    });
-}
-    function arahAnginToRadian(text) {
-  const map = {
-    "Utara": 0,
-    "Timur Laut": 45,
-    "Timur": 90,
-    "Tenggara": 135,
-    "Selatan": 180,
-    "Barat Daya": 225,
-    "Barat": 270,
-    "Barat Laut": 315
-  };
-  const deg = map[text] !== undefined ? map[text] : 0;
-  return deg * Math.PI / 180; // hasil radian
-}
-
-    function updateAllCharts(entry){
-    const timeLabel = new Date(entry.timestamp).toLocaleTimeString('id-ID');
-
-    const charts = [
-        {chart:window.allCharts['chartSuhu'], values:[parseFloat(entry.suhu1), parseFloat(entry.suhu2)]},
-        {chart:window.allCharts['chartKelembaban'], values:[parseFloat(entry.kelembaban1), parseFloat(entry.kelembaban2)]},
-        {chart:window.allCharts['chartUV'], values:[parseFloat(entry.uv_index), parseFloat(entry.uv_intensity)]},
-        {chart:window.allCharts['chartAngin'], values:[parseFloat(entry.kecepatan_angin)]},
-        {chart:window.allCharts['chartRadiasi'], values:[parseFloat(entry.irradiance)]},
-        {chart:window.allCharts['chartDebu'], values:[parseFloat(entry.debu)]},
-        {chart:window.allCharts['chartHujan'], values:[parseFloat(entry.curah_hujan)]}
-    ];
-
-    charts.forEach(c=>{
-        if(c.chart.data.labels.length>=10){
-        c.chart.data.labels.shift();
-        c.chart.data.datasets.forEach((ds,i)=>{
-            if(c.values[i]!==undefined) ds.data.shift();
+      });
+    }
+      function arahAnginToRadian(text) {
+        const map = {
+          "Utara": 0,
+          "Timur Laut": 45,
+          "Timur": 90,
+          "Tenggara": 135,
+          "Selatan": 180,
+          "Barat Daya": 225,
+          "Barat": 270,
+          "Barat Laut": 315
+        };
+        const deg = map[text] !== undefined ? map[text] : 0;
+        return deg * Math.PI / 180; // hasil radian
+      }
+      function updateAllCharts(entry){
+        const timeLabel = new Date(entry.timestamp).toLocaleTimeString('id-ID');
+        const charts = [
+          {chart:window.allCharts['chartSuhu'], values:[parseFloat(entry.suhu1), parseFloat(entry.suhu2)]},
+          {chart:window.allCharts['chartKelembaban'], values:[parseFloat(entry.kelembaban1), parseFloat(entry.kelembaban2)]},
+          {chart:window.allCharts['chartUV'], values:[parseFloat(entry.uv_index), parseFloat(entry.uv_intensity)]},
+          {chart:window.allCharts['chartAngin'], values:[parseFloat(entry.kecepatan_angin)]},
+          {chart:window.allCharts['chartRadiasi'], values:[parseFloat(entry.irradiance)]},
+          {chart:window.allCharts['chartDebu'], values:[parseFloat(entry.debu)]},
+          {chart:window.allCharts['chartHujan'], values:[parseFloat(entry.curah_hujan)]}
+        ];
+        charts.forEach(c=>{
+          if(c.chart.data.labels.length>=10){
+            c.chart.data.labels.shift();
+            c.chart.data.datasets.forEach((ds,i)=>{
+              if(c.values[i]!==undefined) ds.data.shift();
+            });
+          }
+          if(c.chart.data.labels.length<10) c.chart.data.labels.push(timeLabel);
+          c.chart.data.datasets.forEach((ds,i)=>{
+            if(c.values[i]!==undefined) ds.data.push(c.values[i]);
+          });
+          c.chart.update();
         });
-        }
-        if(c.chart.data.labels.length<10) c.chart.data.labels.push(timeLabel);
-        c.chart.data.datasets.forEach((ds,i)=>{
-        if(c.values[i]!==undefined) ds.data.push(c.values[i]);
-        });
-        c.chart.update();
-    });
-
-      const compass = document.getElementById('compass');
-    if(compass){
-        const ctx = compass.getContext('2d');
-        const angle = arahAnginToRadian(entry.arah_angin);
-        const center = 180;
-        ctx.clearRect(0,0,360,360);
-        ctx.beginPath();
-        ctx.arc(center,center,150,0,2*Math.PI);
-        ctx.strokeStyle="#bbb";
-        ctx.lineWidth=2;
-        ctx.shadowColor='rgba(0,0,0,0.05)';
-        ctx.shadowBlur=15;
-        ctx.stroke();
-
-        const directions = ['U','TL','T','TG','S','BD','B','BL'];
-        directions.forEach((dir,i)=>{
+        
+        const compass = document.getElementById('compass');
+        if(compass){
+          const ctx = compass.getContext('2d');
+          const angle = arahAnginToRadian(entry.arah_angin);
+          const center = 100;
+          ctx.clearRect(0,0,200,200);
+          ctx.beginPath();
+          ctx.arc(center,center,80,0,2*Math.PI);
+          ctx.strokeStyle="#bbb";
+          ctx.lineWidth=2;
+          ctx.shadowColor='rgba(0,0,0,0.05)';
+          ctx.shadowBlur=15;
+          ctx.stroke();
+          const directions = ['U','TL','T','TG','S','BD','B','BL'];
+          directions.forEach((dir,i)=>{
             const dirAngle = i * 45 * Math.PI/180;
-            const x = center + (150+20) * Math.cos(dirAngle - Math.PI/2);
-            const y = center + (150+20) * Math.sin(dirAngle - Math.PI/2);
+            const x = center + (80+10) * Math.cos(dirAngle - Math.PI/2);
+            const y = center + (80+10) * Math.sin(dirAngle - Math.PI/2);
             ctx.fillStyle="#333";
-            ctx.font="bold 14px 'Arial', sans-serif";
+            ctx.font="bold 10px 'Arial', sans-serif";
             ctx.textAlign="center";
             ctx.textBaseline="middle";
             ctx.fillText(dir,x,y);
-        });
-
-        ctx.beginPath();
-        ctx.moveTo(center,center);
-        ctx.lineTo(center+120*Math.cos(angle-Math.PI/2), center+120*Math.sin(angle-Math.PI/2));
-        ctx.strokeStyle = '#ff4d4f';
-        ctx.lineWidth = 8;
-        ctx.lineCap = 'round';
-        ctx.shadowColor = 'rgba(255,77,79,0.4)';
-        ctx.shadowBlur = 15;
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(center, center, 12, 0, 2*Math.PI);
-        ctx.fillStyle = '#ff4d4f';
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = 'rgba(0,0,0,0.2)';
-        ctx.fill();
-        ctx.moveTo(center, center);
-        ctx.lineTo(center + 120*Math.cos(angle-Math.PI/2), center + 120*Math.sin(angle-Math.PI/2));
-      ctx.stroke()
-        document.getElementById('chartArahAngin').textContent = `Arah: ${entry.arah_angin}`;
-    }
-    }
+          });
+          ctx.beginPath();
+          ctx.moveTo(center,center);
+          ctx.lineTo(center+60*Math.cos(angle-Math.PI/2), center+60*Math.sin(angle-Math.PI/2));
+          ctx.strokeStyle = '#ff4d4f';
+          ctx.lineWidth = 5;
+          ctx.lineCap = 'round';
+          ctx.shadowColor = 'rgba(255,77,79,0.4)';
+          ctx.shadowBlur = 15;
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(center, center, 8, 0, 2*Math.PI);
+          ctx.fillStyle = '#ff4d4f';
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = 'rgba(0,0,0,0.2)';
+          ctx.fill();
+          ctx.moveTo(center, center);
+          ctx.lineTo(center + 60*Math.cos(angle-Math.PI/2), center + 60*Math.sin(angle-Math.PI/2));
+          ctx.stroke()
+            document.getElementById('chartArahAngin').textContent = `Arah: ${entry.arah_angin}`;
+        }
+      }
 
     function formatRow(d) {
       return `

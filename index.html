@@ -79,6 +79,10 @@
       z-index: 10;
       text-align: center;
     }
+    .new-entry {
+      background-color: #fffae6;
+      transition: background-color 0.5s ease;
+    }
   </style>
 </head>
   <body class="bg-white min-h-screen text-gray-900 font-sans flex flex-col">
@@ -248,6 +252,7 @@
             <table class="min-w-full border-collapse">
               <thead>
                 <tr class="bg-gray-50 text-gray-700 text-sm tracking-wide">
+                  <th class="px-4 py-2">Tanggal</th>
                   <th class="px-4 py-2">Waktu</th>
                   <th class="px-4 py-2">Suhu Mono</th>
                   <th class="px-4 py-2">RH Mono</th>
@@ -518,11 +523,14 @@
           document.getElementById('chartArahAngin').textContent = `Arah: ${entry.arah_angin}`;
         }
       }
-      
       function formatRow(d) {
+        const ts = new Date(d.timestamp);
+        const tanggal = ts.toLocaleDateString('id-ID');
+        const waktu = ts.toLocaleTimeString('id-ID');
         return `
         <tr class="bg-white">
-        <td class="border px-2 py-1">${d.waktu}</td>
+        <td class="border px-2 py-1">${tanggal}</td>
+        <td class="border px-2 py-1">${waktu}</td>
         <td class="border px-2 py-1">${d.suhu1}</td>
         <td class="border px-2 py-1">${d.kelembaban1}</td>
         <td class="border px-2 py-1">${d.suhu2}</td>
@@ -549,6 +557,38 @@
         if (data.length) updateDashboard(data[0]);
         data.forEach(updateAllCharts);
       }
+        document.getElementById('downloadCsvBtn').addEventListener('click', async () => {
+          const start = document.getElementById('startDate').value;
+          const end = document.getElementById('endDate').value;
+          if (!start || !end) return alert("Pilih tanggal mulai dan akhir");
+          const { data, error } = await supabaseClient
+            .from('sensor_data')
+            .select('*')
+            .gte('timestamp', start)
+            .lte('timestamp', end + "T23:59:59")
+            .order('timestamp', { ascending: true });
+          if (error) { console.error("Error downloading CSV:", error); return; }
+          
+          const csvHeader = ["Tanggal","Waktu","Suhu Mono","RH Mono","Suhu Poly","RH Poly","UV Index","UV Intensity","Debu","Curah Hujan","Kecepatan Angin","Arah Angin","Radiasi Matahari"];
+          const csvRows = data.map(d => {
+            const ts = new Date(d.timestamp);
+            return [
+              ts.toLocaleDateString('id-ID'),
+              ts.toLocaleTimeString('id-ID'),
+              d.suhu1, d.kelembaban1, d.suhu2, d.kelembaban2,
+              d.uv_index, d.uv_intensity, d.debu, d.curah_hujan,
+              d.kecepatan_angin, d.arah_angin, d.irradiance
+            ].join(',');
+          });
+          const csvContent = [csvHeader.join(','), ...csvRows].join('\n');
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `histori_${start}_${end}.csv`;
+          a.click();
+          URL.revokeObjectURL(url);
+        });
       
       supabaseClient.channel('sensor-realtime')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sensor_data' }, payload => {

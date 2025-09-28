@@ -13,7 +13,7 @@
 .param-card:hover {
   transform: scale(1.05);
 }
-@media (min-width: 640px) {
+@media (min-width: 639px) {
   .param-card {
     width: 100%;
   }

@@ -15,8 +15,7 @@
 }
 @media (min-width: 640px) {
   .param-card {
-    width: 7rem;
-    height: 7rem;
+    width: 100%;
   }
 }
 @media (min-width: 768px) {

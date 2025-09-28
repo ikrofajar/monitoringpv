@@ -1,5 +1,5 @@
 .param-card {
-  width: 7rem;
+  width: 8rem;
   height: 6rem;
   display: flex;
   flex-direction: column;
@@ -13,9 +13,10 @@
 .param-card:hover {
   transform: scale(1.05);
 }
-@media (min-width: 639px) {
+@media (min-width: 640px) {
   .param-card {
-    width: 100%;
+    width: 8rem;
+    height: 7rem;
   }
 }
 @media (min-width: 768px) {

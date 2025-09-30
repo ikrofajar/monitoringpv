@@ -240,7 +240,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
     .from('sensor_data')
     .select('*')
     .gte('timestamp', startISO)
-    .lte('timestamp', endISO)// + "T23:59:59")
+    .lte('timestamp', endISO)
     .order('timestamp', { ascending: true });
   if (error) {
     console.error("Error downloading CSV:", error);

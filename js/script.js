@@ -116,7 +116,7 @@ function arahAnginToRadian(text) {
   return deg * Math.PI / 180; // hasil radian
 }
 function updateAllCharts(entry){
-  const timeLabel = toUTC8String(entry.timestamp).split(" ")[1];
+  const timeLabel = formatTimestamp(entry.timestamp).split(" ")[1];
   //const timeLabel = new Date(entry.timestamp).toLocaleTimeString('id-ID');
   const charts = [
     {chart:window.allCharts['chartSuhu'], values:[parseFloat(entry.suhu1), parseFloat(entry.suhu2)]},
@@ -202,7 +202,7 @@ function formatRow(d) {
   //const ts = new Date(d.timestamp);
   //const tanggal = ts.toLocaleDateString('id-ID');
   //const waktu = ts.toLocaleTimeString('id-ID');
-  const [tanggal, waktu] = toUTC8String(d.timestamp).split(" ");
+  const [tanggal, waktu] = formatTimestamp(d.timestamp).split(" ");
   return `
   <tr class="bg-white">
   <td class="border px-2 py-1">${tanggal}</td>
@@ -232,12 +232,10 @@ async function loadData() {
   if (data.length) updateDashboard(data[0]);
   data.forEach(updateAllCharts);
 }
-function toUTC8String(isoString) {
+function formatTimestamp(isoString) {
   const date = new Date(isoString);
-  const utc8 = new Date(date.getTime() + (8 * 60 * 60 * 1000));
   const pad = n => n.toString().padStart(2, "0");
-  return `${utc8.getFullYear()}-${pad(utc8.getMonth() + 1)}-${pad(utc8.getDate())} ${pad(utc8.getHours())}:${pad(utc8.getMinutes())}:${pad(utc8.getSeconds())}`;
-  //return utc8.toISOString().replace("T", " ").split(".")[0]; 
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
 document.getElementById('downloadCsvBtn').addEventListener('click', async () => {
   const startInput = document.getElementById("startDate").value;
@@ -274,7 +272,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
        "Kecepatan Angin","Arah Angin","Radiasi Matahari"]
     ];
     data.forEach(d => {
-      const [tanggal, waktu] = toUTC8String(d.timestamp).split(" ");
+      const [tanggal, waktu] = formatTimestamp(d.timestamp).split(" ");
       //const ts = new Date(d.timestamp);
       wsData.push([
         //ts.toLocaleDateString('id-ID'),
@@ -296,7 +294,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
     "Kecepatan Angin","Arah Angin","Radiasi Matahari"
   ];
   const csvRows = data.map(d => {
-    const [tanggal, waktu] = toUTC8String(d.timestamp).split(" ");
+    const [tanggal, waktu] = formatTimestamp(d.timestamp).split(" ");
     //const ts = new Date(d.timestamp);
     return [
       //ts.toLocaleDateString('id-ID'),

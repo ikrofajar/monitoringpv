@@ -116,7 +116,8 @@ function arahAnginToRadian(text) {
   return deg * Math.PI / 180; // hasil radian
 }
 function updateAllCharts(entry){
-  const timeLabel = new Date(entry.timestamp).toLocaleTimeString('id-ID');
+  const timeLabel = toUTC8String(entry.timestamp).split(" ")[1];
+  //const timeLabel = new Date(entry.timestamp).toLocaleTimeString('id-ID');
   const charts = [
     {chart:window.allCharts['chartSuhu'], values:[parseFloat(entry.suhu1), parseFloat(entry.suhu2)]},
     {chart:window.allCharts['chartKelembaban'], values:[parseFloat(entry.kelembaban1), parseFloat(entry.kelembaban2)]},
@@ -198,9 +199,10 @@ function updateAllCharts(entry){
   }
 }
 function formatRow(d) {
-  const ts = new Date(d.timestamp);
-  const tanggal = ts.toLocaleDateString('id-ID');
-  const waktu = ts.toLocaleTimeString('id-ID');
+  //const ts = new Date(d.timestamp);
+  //const tanggal = ts.toLocaleDateString('id-ID');
+  //const waktu = ts.toLocaleTimeString('id-ID');
+  const [tanggal, waktu] = toUTC8String(d.timestamp).split(" ");
   return `
   <tr class="bg-white">
   <td class="border px-2 py-1">${tanggal}</td>
@@ -230,12 +232,23 @@ async function loadData() {
   if (data.length) updateDashboard(data[0]);
   data.forEach(updateAllCharts);
 }
+function toUTC8String(isoString) {
+  const date = new Date(isoString);
+  const utc8 = new Date(date.getTime() + (8 * 60 * 60 * 1000));
+  const pad = n => n.toString().padStart(2, "0");
+  return `${utc8.getFullYear()}-${pad(utc8.getMonth() + 1)}-${pad(utc8.getDate())} ${pad(utc8.getHours())}:${pad(utc8.getMinutes())}:${pad(utc8.getSeconds())}`;
+  //return utc8.toISOString().replace("T", " ").split(".")[0]; 
+}
 document.getElementById('downloadCsvBtn').addEventListener('click', async () => {
   const startInput = document.getElementById("startDate").value;
   const endInput = document.getElementById("endDate").value;
   if (!startInput || !endInput) return alert("Pilih tanggal & waktu mulai dan akhir");
   const startISO = new Date(startInput).toISOString();
-  const endISO = new Date(endInput).toISOString();
+  let endDate = new Date(endInput);
+  if (endDate.getHours() === 0 && endDate.getMinutes() === 0) {
+    endDate.setHours(23, 59, 59, 999);
+  }
+  const endISO = endDate.toISOString();
   const { data, error } = await supabaseClient
     .from('sensor_data')
     .select('*')
@@ -251,9 +264,8 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
     return;
   }
   const formatExcel = confirm("Klik OK untuk Excel (.xlsx), Cancel untuk CSV (.csv)");
-  
-  const safeStart = startInput.replace(/:/g, "-").replace("T", "_");
-  const safeEnd = endInput.replace(/:/g, "-").replace("T", "_");
+  const safeStart = startInput.replace(/:/g, "-").replace("T", "_").replace(/\//g, "-");
+  const safeEnd = endInput.replace(/:/g, "-").replace("T", "_").replace(/\//g, "-");
   
   if (formatExcel) {
     const wsData = [
@@ -262,10 +274,12 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
        "Kecepatan Angin","Arah Angin","Radiasi Matahari"]
     ];
     data.forEach(d => {
-      const ts = new Date(d.timestamp);
+      const [tanggal, waktu] = toUTC8String(d.timestamp).split(" ");
+      //const ts = new Date(d.timestamp);
       wsData.push([
-        ts.toLocaleDateString('id-ID'),
-        ts.toLocaleTimeString('id-ID'),
+        //ts.toLocaleDateString('id-ID'),
+        //ts.toLocaleTimeString('id-ID'),
+        tanggal, waktu,
         d.suhu1, d.kelembaban1, d.suhu2, d.kelembaban2,
         d.uv_index, d.uv_intensity, d.debu, d.curah_hujan,
         d.kecepatan_angin, d.arah_angin, d.irradiance
@@ -282,10 +296,12 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
     "Kecepatan Angin","Arah Angin","Radiasi Matahari"
   ];
   const csvRows = data.map(d => {
-    const ts = new Date(d.timestamp);
+    const [tanggal, waktu] = toUTC8String(d.timestamp).split(" ");
+    //const ts = new Date(d.timestamp);
     return [
-      ts.toLocaleDateString('id-ID'),
-      ts.toLocaleTimeString('id-ID'),
+      //ts.toLocaleDateString('id-ID'),
+      //ts.toLocaleTimeString('id-ID'),
+      tanggal, waktu,
       d.suhu1, d.kelembaban1, d.suhu2, d.kelembaban2,
       d.uv_index, d.uv_intensity, d.debu, d.curah_hujan,
       d.kecepatan_angin, d.arah_angin, d.irradiance

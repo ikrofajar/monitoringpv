@@ -169,10 +169,15 @@
         <div class="p-6 bg-white rounded-2xl shadow-lg">
           <div class="flex flex-col sm:flex-row justify-center items-center gap-2 mb-4 w-full">
             <div class="flex items-center gap-2 w-full sm:w-auto bg-white rounded-2xl shadow-md p-2">
-              <input type="date" id="startDate" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2 text-sm text-gray-700 focus:ring-1 focus:ring-blue-400 focus:outline-none">
+              <input type="datetime-local" id="startDate"
+                class="flex-1 rounded-2xl border border-gray-200 px-4 py-2 text-sm text-gray-700 focus:ring-1 focus:ring-blue-400 focus:outline-none">
               <span class="text-gray-400 text-sm leading-none">—</span>
-              <input type="date" id="endDate" class="flex-1 rounded-2xl border border-gray-200 px-4 py-2 text-sm text-gray-700 focus:ring-1 focus:ring-blue-400 focus:outline-none">
-              <button id="downloadCsvBtn" class="sm:w-auto bg-blue-600 text-white rounded-xl px-4 py-2 text-sm font-semibold hover:bg-blue-500 transition flex items-center justify-center gap-2"><i class="fas fa-download"></i></button>
+              <input type="datetime-local" id="endDate"
+                class="flex-1 rounded-2xl border border-gray-200 px-4 py-2 text-sm text-gray-700 focus:ring-1 focus:ring-blue-400 focus:outline-none">
+              <button id="downloadCsvBtn"
+                class="sm:w-auto bg-blue-600 text-white rounded-xl px-4 py-2 text-sm font-semibold hover:bg-blue-500 transition flex items-center justify-center gap-2">
+                <i class="fas fa-download"></i>
+              </button>
             </div>
           </div>
           <div class="overflow-x-auto rounded-2xl border border-gray-200">

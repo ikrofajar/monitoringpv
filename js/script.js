@@ -299,6 +299,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
   a.download = `histori_${safeStart}_${safeEnd}.csv`;
   a.click();
   URL.revokeObjectURL(url);
+  }
 });
 supabaseClient.channel('sensor-realtime')
   .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sensor_data' }, payload => {

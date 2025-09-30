@@ -243,9 +243,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
   if (!startInput || !endInput) return alert("Pilih tanggal & waktu mulai dan akhir");
   const startISO = new Date(startInput).toISOString();
   let endDate = new Date(endInput);
-  if (endDate.getHours() === 0 && endDate.getMinutes() === 0) {
-    endDate.setHours(23, 59, 59, 999);
-  }
+  endDate.setHours(23, 59, 59, 999);
   const endISO = endDate.toISOString();
   const { data, error } = await supabaseClient
     .from('sensor_data')

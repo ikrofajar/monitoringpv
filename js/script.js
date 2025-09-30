@@ -231,18 +231,56 @@ async function loadData() {
   data.forEach(updateAllCharts);
 }
 document.getElementById('downloadCsvBtn').addEventListener('click', async () => {
-  const start = document.getElementById('startDate').value;
-  const end = document.getElementById('endDate').value;
-  if (!start || !end) return alert("Pilih tanggal mulai dan akhir");
+  const startInput = document.getElementById("startDate").value;
+  const endInput = document.getElementById("endDate").value;
+  if (!startInput || !endInput) return alert("Pilih tanggal & waktu mulai dan akhir");
+  const startISO = new Date(startInput).toISOString();
+  const endISO = new Date(endInput).toISOString();
   const { data, error } = await supabaseClient
     .from('sensor_data')
     .select('*')
-    .gte('timestamp', start)
-    .lte('timestamp', end + "T23:59:59")
+    .gte('timestamp', startISO)
+    .lte('timestamp', endISO)// + "T23:59:59")
     .order('timestamp', { ascending: true });
-  if (error) { console.error("Error downloading CSV:", error); return; }
+  if (error) {
+    console.error("Error downloading CSV:", error);
+    return;
+  }
+  if (!data || data.length === 0) {
+    alert("Tidak ada data pada rentang waktu tersebut");
+    return;
+  }
+  const formatExcel = confirm("Klik OK untuk Excel (.xlsx), Cancel untuk CSV (.csv)");
   
-  const csvHeader = ["Tanggal","Waktu","Suhu Mono","RH Mono","Suhu Poly","RH Poly","UV Index","UV Intensity","Debu","Curah Hujan","Kecepatan Angin","Arah Angin","Radiasi Matahari"];
+  const safeStart = startInput.replace(/:/g, "-").replace("T", "_");
+  const safeEnd = endInput.replace(/:/g, "-").replace("T", "_");
+  
+  if (formatExcel) {
+    const wsData = [
+      ["Tanggal","Waktu","Suhu Mono","RH Mono","Suhu Poly","RH Poly",
+       "UV Index","UV Intensity","Debu","Curah Hujan",
+       "Kecepatan Angin","Arah Angin","Radiasi Matahari"]
+    ];
+    data.forEach(d => {
+      const ts = new Date(d.timestamp);
+      wsData.push([
+        ts.toLocaleDateString('id-ID'),
+        ts.toLocaleTimeString('id-ID'),
+        d.suhu1, d.kelembaban1, d.suhu2, d.kelembaban2,
+        d.uv_index, d.uv_intensity, d.debu, d.curah_hujan,
+        d.kecepatan_angin, d.arah_angin, d.irradiance
+      ]);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Histori Sensor");
+    XLSX.writeFile(wb, `histori_${safeStart}_${safeEnd}.xlsx`);
+  } else {
+  const csvHeader = [
+    "Tanggal","Waktu","Suhu Mono","RH Mono","Suhu Poly","RH Poly",
+    "UV Index","UV Intensity","Debu","Curah Hujan",
+    "Kecepatan Angin","Arah Angin","Radiasi Matahari"
+  ];
   const csvRows = data.map(d => {
     const ts = new Date(d.timestamp);
     return [
@@ -258,7 +296,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `histori_${start}_${end}.csv`;
+  a.download = `histori_${safeStart}_${safeEnd}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 });

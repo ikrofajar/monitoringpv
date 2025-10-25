@@ -25,7 +25,6 @@ function updateDashboard(d) {
   document.getElementById("suhu2").textContent = d.suhu2 + " °C";
   document.getElementById("kelembaban2").textContent = d.kelembaban2 + " %";
   document.getElementById("uv_index").textContent = d.uv_index;
-  document.getElementById("uv_intensity").textContent = d.uv_intensity;
   document.getElementById("debu").textContent = d.debu + " µg/m³";
   document.getElementById("curah_hujan").textContent = d.curah_hujan + " mm";
   document.getElementById("kecepatan_angin").textContent = d.kecepatan_angin + " m/s";
@@ -44,7 +43,7 @@ function initCharts() {
   const chartConfigs = [
     {id:'chartSuhu', labels:['Suhu 1','Suhu 2'], colors:[[255,99,132],[255,159,64]]},
     {id:'chartKelembaban', labels:['Kelembaban 1','Kelembaban 2'], colors:[[54,162,235],[75,192,192]]},
-    {id:'chartUV', labels:['UV Index','UV Intensity'], colors:[[255,206,86],[255,159,64]]},
+    {id:'chartUV', labels:['UV Index'], colors:[[255,206,86]]},
     {id:'chartAngin', labels:['Kecepatan Angin'], colors:[[75,192,192]]},
     {id:'chartRadiasi', labels:['Irradiance'], colors:[[255,159,64]]},
     {id:'chartDebu', labels:['Debu'], colors:[[153,102,255]]},
@@ -121,7 +120,7 @@ function updateAllCharts(entry){
   const charts = [
     {chart:window.allCharts['chartSuhu'], values:[parseFloat(entry.suhu1), parseFloat(entry.suhu2)]},
     {chart:window.allCharts['chartKelembaban'], values:[parseFloat(entry.kelembaban1), parseFloat(entry.kelembaban2)]},
-    {chart:window.allCharts['chartUV'], values:[parseFloat(entry.uv_index), parseFloat(entry.uv_intensity)]},
+    {chart:window.allCharts['chartUV'], values:[parseFloat(entry.uv_index)]},
     {chart:window.allCharts['chartAngin'], values:[parseFloat(entry.kecepatan_angin)]},
     {chart:window.allCharts['chartRadiasi'], values:[parseFloat(entry.irradiance)]},
     {chart:window.allCharts['chartDebu'], values:[parseFloat(entry.debu)]},
@@ -212,7 +211,6 @@ function formatRow(d) {
   <td class="border px-2 py-1">${d.suhu2}</td>
   <td class="border px-2 py-1">${d.kelembaban2}</td>
   <td class="border px-2 py-1">${d.uv_index}</td>
-  <td class="border px-2 py-1">${d.uv_intensity}</td>
   <td class="border px-2 py-1">${d.debu}</td>
   <td class="border px-2 py-1">${d.curah_hujan}</td>
   <td class="border px-2 py-1">${d.kecepatan_angin}</td>
@@ -266,7 +264,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
   if (formatExcel) {
     const wsData = [
       ["Tanggal","Waktu","Suhu Mono","RH Mono","Suhu Poly","RH Poly",
-       "UV Index","UV Intensity","Debu","Curah Hujan",
+       "UV Index","Debu","Curah Hujan",
        "Kecepatan Angin","Arah Angin","Radiasi Matahari"]
     ];
     data.forEach(d => {
@@ -277,7 +275,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
         //ts.toLocaleTimeString('id-ID'),
         tanggal, waktu,
         d.suhu1, d.kelembaban1, d.suhu2, d.kelembaban2,
-        d.uv_index, d.uv_intensity, d.debu, d.curah_hujan,
+        d.uv_index, d.debu, d.curah_hujan,
         d.kecepatan_angin, d.arah_angin, d.irradiance
       ]);
     });
@@ -288,7 +286,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
   } else {
   const csvHeader = [
     "Tanggal","Waktu","Suhu Mono","RH Mono","Suhu Poly","RH Poly",
-    "UV Index","UV Intensity","Debu","Curah Hujan",
+    "UV Index","Debu","Curah Hujan",
     "Kecepatan Angin","Arah Angin","Radiasi Matahari"
   ];
   const csvRows = data.map(d => {
@@ -299,7 +297,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
       //ts.toLocaleTimeString('id-ID'),
       tanggal, waktu,
       d.suhu1, d.kelembaban1, d.suhu2, d.kelembaban2,
-      d.uv_index, d.uv_intensity, d.debu, d.curah_hujan,
+      d.uv_index, d.debu, d.curah_hujan,
       d.kecepatan_angin, d.arah_angin, d.irradiance
     ].join(',');
   });

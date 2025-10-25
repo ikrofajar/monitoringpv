@@ -27,7 +27,7 @@ function updateDashboard(d) {
   document.getElementById("uv_index").textContent = d.uv_index;
   document.getElementById("debu").textContent = d.debu + " µg/m³";
   document.getElementById("curah_hujan").textContent = d.curah_hujan + " mm";
-  document.getElementById("kecepatan_angin").textContent = d.kecepatan_angin + " m/s";
+  document.getElementById("kecepatan_angin").textContent = d.kecepatan_angin + " km/h";
   document.getElementById("arah_angin").textContent = d.arah_angin;
   document.getElementById("irradiance").textContent = d.irradiance;
   let rataSuhu = ((d.suhu1 + d.suhu2) / 2).toFixed(1);

@@ -29,7 +29,7 @@ function updateDashboard(d) {
   document.getElementById("curah_hujan").textContent = d.curah_hujan + " mm";
   document.getElementById("kecepatan_angin").textContent = d.kecepatan_angin + " km/h";
   document.getElementById("arah_angin").textContent = d.arah_angin;
-  document.getElementById("irradiance").textContent = d.irradiance;
+  document.getElementById("irradiance").textContent = d.irradiance + " W/m²";
   let rataSuhu = ((d.suhu1 + d.suhu2) / 2).toFixed(1);
   setLevel(parseFloat(rataSuhu));
   let kondisi;

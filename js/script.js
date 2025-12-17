@@ -19,7 +19,36 @@ function setLevel(temp) {
   water.style.strokeDashoffset = offset;
   valueDisplay.textContent = `${temp.toFixed(1)}°C`;
 }
+
+function updateSolarPanels(d) {
+  document.querySelectorAll(".solar-panel").forEach(panel => {
+    const key = panel.dataset.source;
+    const val = d[key];
+
+    if (val === undefined || val === null) {
+      panel.innerHTML = `<div class="text-xs text-gray-400">No Data</div>`;
+      return;
+    }
+
+    // Warna berdasarkan suhu
+    let color = "bg-green-100";
+    if (val >= 50) color = "bg-red-200";
+    else if (val >= 40) color = "bg-orange-200";
+    else if (val >= 30) color = "bg-yellow-200";
+
+    panel.classList.remove(
+      "bg-green-100","bg-yellow-200","bg-orange-200","bg-red-200"
+    );
+    panel.classList.add(color);
+
+    panel.innerHTML = `
+      <div class="text-[10px] text-gray-600">${key}</div>
+      <div class="text-sm font-bold">${val.toFixed(1)} °C</div>
+    `;
+  });
+}
 function updateDashboard(d) {
+  updateSolarPanels(d);
   document.getElementById("suhu1").textContent = d.suhu1 + " °C";
   document.getElementById("suhu2").textContent = d.suhu2 + " °C";
   document.getElementById("ds18b20_0").textContent = d.ds18b20_0 + " °C";

@@ -3,13 +3,37 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const dataBody = document.getElementById("data-body");
 let lastData = null;
+// Mapping posisi panel → sensor
+const PANEL_MAP_MONO = {
+  p1: null,
+  p2: null,
+  p3: "ds18b20_6",
+  p4: "suhu1",      // tengah atas
+  p5: null,
+  p6: null,
+  p7: "ds18b20_4",
+
+  p8: "ds18b20_0",
+  p9: null,
+  p10: null,
+  p11: "suhu1",     // tengah bawah
+  p12: "ds18b20_5",
+  p13: null,
+  p14: null
+};
 const MONO_SENSORS = [
-  "suhu1", "suhu2",
-  "ds18b20_0", "ds18b20_1", "ds18b20_2"
+  "ds18b20_4",
+  "ds18b20_5",
+  "ds18b20_6",
+  "ds18b20_0",
+  "suhu1"
 ];
-const POLY_SENSORS = [
-  "ds18b20_3", "ds18b20_4",
-  "ds18b20_5", "ds18b20_6", "ds18b20_7"
+const MONO_SENSORS = [
+  "ds18b20_1",
+  "ds18b20_3",
+  "ds18b20_2",
+  "ds18b20_7",
+  "suhu2"
 ];
 function hitungRataPanel(data, sensorList) {
   const values = sensorList
@@ -22,16 +46,25 @@ function hitungRataPanel(data, sensorList) {
   return sum / values.length;
 }
 function updateSolarPanels(d) {
-  document.querySelectorAll(".solar-panel").forEach(panel => {
-    const key = panel.dataset.source;
-    const val = parseFloat(d[key]);
+  document.querySelectorAll(".solar-panel").forEach((panel, i) => {
+    const panelIndex = "p" + (i + 1);
+    const key = PANEL_MAP_MONO[panelIndex];
 
-    if (val === undefined || val === null) {
-      panel.innerHTML = `<div class="text-xs text-gray-400">No Data</div>`;
+    if (!key || d[key] === undefined) {
+      panel.classList.remove(
+        "bg-green-100","bg-yellow-200","bg-orange-200","bg-red-200"
+      );
+      panel.classList.add("bg-gray-100");
+      panel.innerHTML = `
+        <div class="text-[10px] text-gray-400">${panelIndex}</div>
+        <div class="text-xs text-gray-400">No Sensor</div>
+      `;
       return;
     }
 
-    // Warna berdasarkan suhu
+    const val = parseFloat(d[key]);
+    if (isNaN(val)) return;
+
     let color = "bg-green-100";
     if (val >= 50) color = "bg-red-200";
     else if (val >= 40) color = "bg-orange-200";
@@ -43,7 +76,7 @@ function updateSolarPanels(d) {
     panel.classList.add(color);
 
     panel.innerHTML = `
-      <div class="text-[10px] text-gray-600">${key}</div>
+      <div class="text-[10px] text-gray-600">${panelIndex} • ${key}</div>
       <div class="text-sm font-bold">${val.toFixed(1)} °C</div>
     `;
   });

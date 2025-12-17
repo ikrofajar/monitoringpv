@@ -21,8 +21,16 @@ function setLevel(temp) {
 }
 function updateDashboard(d) {
   document.getElementById("suhu1").textContent = d.suhu1 + " °C";
-  document.getElementById("kelembaban1").textContent = d.kelembaban1 + " %";
   document.getElementById("suhu2").textContent = d.suhu2 + " °C";
+  document.getElementById("ds18b20_0").textContent = d.ds18b20_0 + " °C";
+  document.getElementById("ds18b20_1").textContent = d.ds18b20_1 + " °C";
+  document.getElementById("ds18b20_2").textContent = d.ds18b20_2 + " °C";
+  document.getElementById("ds18b20_3").textContent = d.ds18b20_3 + " °C";
+  document.getElementById("ds18b20_4").textContent = d.ds18b20_4 + " °C";
+  document.getElementById("ds18b20_5").textContent = d.ds18b20_5 + " °C";
+  document.getElementById("ds18b20_6").textContent = d.ds18b20_6 + " °C";
+  document.getElementById("ds18b20_7").textContent = d.ds18b20_7 + " °C";
+  document.getElementById("kelembaban1").textContent = d.kelembaban1 + " %";
   document.getElementById("kelembaban2").textContent = d.kelembaban2 + " %";
   document.getElementById("uv_index").textContent = d.uv_index;
   document.getElementById("debu").textContent = d.debu + " µg/m³";
@@ -207,8 +215,8 @@ function formatRow(d) {
   <td class="border px-2 py-1">${tanggal}</td>
   <td class="border px-2 py-1">${waktu}</td>
   <td class="border px-2 py-1">${d.suhu1}</td>
-  <td class="border px-2 py-1">${d.kelembaban1}</td>
   <td class="border px-2 py-1">${d.suhu2}</td>
+  <td class="border px-2 py-1">${d.kelembaban1}</td>
   <td class="border px-2 py-1">${d.kelembaban2}</td>
   <td class="border px-2 py-1">${d.uv_index}</td>
   <td class="border px-2 py-1">${d.debu}</td>
@@ -296,7 +304,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
       //ts.toLocaleDateString('id-ID'),
       //ts.toLocaleTimeString('id-ID'),
       tanggal, waktu,
-      d.suhu1, d.kelembaban1, d.suhu2, d.kelembaban2,
+      d.suhu1, d.suhu2, d.kelembaban1, d.kelembaban2,
       d.uv_index, d.debu, d.curah_hujan,
       d.kecepatan_angin, d.arah_angin, d.irradiance
     ].join(',');

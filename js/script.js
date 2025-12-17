@@ -13,6 +13,27 @@ water.style.strokeDashoffset = arcLength;
 const minTemp = 0;
 const maxTemp = 50;
 
+const MONO_SENSORS = [
+  "suhu1", "suhu2",
+  "ds18b20_0", "ds18b20_1", "ds18b20_2"
+];
+
+const POLY_SENSORS = [
+  "ds18b20_3", "ds18b20_4",
+  "ds18b20_5", "ds18b20_6", "ds18b20_7"
+];
+
+function hitungRataPanel(data, sensorList) {
+  const values = sensorList
+    .map(k => parseFloat(data[k]))
+    .filter(v => !isNaN(v));
+
+  if (!values.length) return null;
+
+  const sum = values.reduce((a, b) => a + b, 0);
+  return sum / values.length;
+}
+
 function setLevel(temp) {
   const percent = ((temp - minTemp) / (maxTemp - minTemp)) * 100;
   const offset = arcLength - (percent / 100) * arcLength;
@@ -57,14 +78,56 @@ function updateDashboard(d) {
   document.getElementById("kecepatan_angin").textContent = d.kecepatan_angin + " km/h";
   document.getElementById("arah_angin").textContent = d.arah_angin;
   document.getElementById("irradiance").textContent = d.irradiance + " W/m²";
-  let rataSuhu = ((d.suhu1 + d.suhu2) / 2).toFixed(1);
-  setLevel(parseFloat(rataSuhu));
-  let kondisi;
-  if (rataSuhu < 18) {kondisi = "Dingin";}
-  else if (rataSuhu >= 18 && rataSuhu <= 26) {kondisi = "Normal";}
-  else {kondisi = "Panas";}
-  document.getElementById("kondisiCuaca").textContent = kondisi;
+  // ===== RATA-RATA SUHU PANEL =====
+  const avgMono = hitungRataPanel(d, MONO_SENSORS);
+  const avgPoly = hitungRataPanel(d, POLY_SENSORS);
+  
+  // Tampilkan ke summary card
+  if (avgMono !== null) {
+    document.getElementById("avg-mono").textContent = avgMono.toFixed(1) + " °C";
+  }
+  
+  if (avgPoly !== null) {
+    document.getElementById("avg-poly").textContent = avgPoly.toFixed(1) + " °C";
+  }
+  
+  // Gauge tetap pakai rata-rata MONO (atau bisa diganti total)
+  if (avgMono !== null) {
+    setLevel(avgMono);
+  
+    let kondisi;
+    if (avgMono < 35) kondisi = "Dingin";
+    else if (avgMono <= 45) kondisi = "Normal";
+    else kondisi = "Panas";
+  
+    document.getElementById("kondisiCuaca").textContent = kondisi;
+  }
 }
+function toggleGrid(type) {
+  const summary = document.getElementById("summary-panel");
+  const monoGrid = document.getElementById("grid-mono");
+  const polyGrid = document.getElementById("grid-poly");
+
+  if (!summary || !monoGrid || !polyGrid) return;
+
+  if (type === "mono") {
+    monoGrid.classList.toggle("hidden");
+    polyGrid.classList.add("hidden");
+  }
+
+  if (type === "poly") {
+    polyGrid.classList.toggle("hidden");
+    monoGrid.classList.add("hidden");
+  }
+
+  // Jika ada grid yang tampil → summary disembunyikan
+  const gridAktif =
+    !monoGrid.classList.contains("hidden") ||
+    !polyGrid.classList.contains("hidden");
+
+  summary.classList.toggle("hidden", gridAktif);
+}
+
 function initCharts() {
   if (!window.allCharts) window.allCharts = {};
   const chartConfigs = [

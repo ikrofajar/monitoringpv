@@ -28,7 +28,7 @@ const MONO_SENSORS = [
   "ds18b20_0",
   "suhu1"
 ];
-const MONO_SENSORS = [
+const POLY_SENSORS = [
   "ds18b20_1",
   "ds18b20_3",
   "ds18b20_2",

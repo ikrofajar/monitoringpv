@@ -60,8 +60,7 @@
           </div>
         </div>
         <div id="summary-panel" class="flex flex-wrap justify-center gap-6 p-4">
-          <div onclick="toggleGrid('mono')"
-               class="cursor-pointer w-60 bg-white rounded-2xl shadow-lg p-4 text-center hover:scale-105 transition">
+          <div class="w-60 bg-white rounded-2xl shadow-lg p-4 text-center">      
             <div class="text-sm text-gray-500 mb-1">Panel Surya MONO</div>
             <div class="text-3xl font-bold text-orange-500" id="avg-mono">- °C</div>
             <div class="text-xs text-gray-400 mt-1">Rata-rata Suhu</div>
@@ -70,7 +69,11 @@
               <span>V: <span id="mono_voltage">- V</span></span>
               <span>I: <span id="mono_current">- A</span></span>
             </div>
-            <div class="text-xs text-blue-600 mt-2">Klik untuk detail</div>
+            <button
+              onclick="openPanelModal('mono')"
+              class="text-xs text-blue-600 mt-2 underline hover:text-blue-800">
+              Klik untuk detail
+            </button>
           </div>
           <div onclick="toggleGrid('poly')"
                class="cursor-pointer w-60 bg-white rounded-2xl shadow-lg p-4 text-center hover:scale-105 transition">
@@ -305,6 +308,28 @@
         © 2025 Universitas Tadulako
       </div>
     </footer>
+    <!-- ================= MODAL DETAIL PANEL ================= -->
+    <div id="panelModal"
+         class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center">
+    
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-6xl p-6 relative">
+    
+        <!-- HEADER -->
+        <div class="flex justify-between items-center mb-4">
+          <h3 id="modalTitle" class="text-lg font-bold text-gray-800">
+            Detail Panel
+          </h3>
+          <button onclick="closePanelModal()"
+                  class="text-gray-400 hover:text-red-500 text-xl font-bold">
+            ✕
+          </button>
+        </div>
+    
+        <!-- ISI GRID -->
+        <div id="modalContent"></div>
+    
+      </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script src="js/script.js"></script>
   </body>

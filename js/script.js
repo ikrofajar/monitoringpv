@@ -87,9 +87,9 @@ function toggleGrid(type) {
   summary.classList.toggle("hidden", gridAktif);
 }
 function openPanelPopup(type) {
-  const modal = document.getElementById("panelModal");
-  const title = document.getElementById("modalTitle");
-  const grid = document.getElementById("modalGrid");
+  const Popup = document.getElementById("panelPopup");
+  const title = document.getElementById("PopupTitle");
+  const grid = document.getElementById("PopupGrid");
 
   grid.innerHTML = "";
 
@@ -108,16 +108,16 @@ function openPanelPopup(type) {
     grid.appendChild(div);
   });
 
-  modal.classList.remove("hidden");
-  modal.classList.add("flex");
+  Popup.classList.remove("hidden");
+  Popup.classList.add("flex");
 }
 function closePanelPopup() {
-  const modal = document.getElementById("panelModal");
-  modal.classList.add("hidden");
-  modal.classList.remove("flex");
+  const Popup = document.getElementById("panelPopup");
+  Popup.classList.add("hidden");
+  Popup.classList.remove("flex");
 }
-document.getElementById("panelModal").addEventListener("click", e => {
-  if (e.target.id === "panelModal") closePanelPopup();
+document.getElementById("panelPopup").addEventListener("click", e => {
+  if (e.target.id === "panelPopup") closePanelPopup();
 });
 
 

@@ -70,7 +70,7 @@
               <span>I: <span id="mono_current">- A</span></span>
             </div>
             <button
-              onclick="openPanelModal('mono')"
+              onclick="openPanelPopup('mono')"
               class="text-xs text-blue-600 mt-2 underline hover:text-blue-800">
               Klik untuk detail
             </button>
@@ -309,24 +309,24 @@
       </div>
     </footer>
     <!-- ================= MODAL DETAIL PANEL ================= -->
-    <div id="panelModal"
+    <div id="panelPopup"
          class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center">
     
       <div class="bg-white rounded-2xl shadow-xl w-full max-w-6xl p-6 relative">
     
         <!-- HEADER -->
         <div class="flex justify-between items-center mb-4">
-          <h3 id="modalTitle" class="text-lg font-bold text-gray-800">
+          <h3 id="PopupTitle" class="text-lg font-bold text-gray-800">
             Detail Panel
           </h3>
-          <button onclick="closePanelModal()"
+          <button onclick="closePanelPopuop()"
                   class="text-gray-400 hover:text-red-500 text-xl font-bold">
             ✕
           </button>
         </div>
     
         <!-- ISI GRID -->
-        <div id="modalContent"></div>
+        <div id="PopupContent"></div>
     
       </div>
     </div>

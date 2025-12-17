@@ -2,6 +2,7 @@ const SUPABASE_URL = "https://bryjpjzvsadfvjwqgwak.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyeWpwanp2c2FkZnZqd3Fnd2FrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0MzA0MDUsImV4cCI6MjA3NDAwNjQwNX0.1iWQJhtE02t4JTcutIPkzxmn2qyx-Z7JCKFDQ8itCw8";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const dataBody = document.getElementById("data-body");
+let lastData = null;
 const MONO_SENSORS = [
   "suhu1", "suhu2",
   "ds18b20_0", "ds18b20_1", "ds18b20_2"
@@ -48,6 +49,7 @@ function updateSolarPanels(d) {
   });
 }
 function updateDashboard(d) {
+  lastData = d;
   updateSolarPanels(d);
   document.getElementById("kelembaban1").textContent = d.kelembaban1 + " %";
   document.getElementById("kelembaban2").textContent = d.kelembaban2 + " %";
@@ -72,34 +74,37 @@ function updateDashboard(d) {
 }
 function toggleGrid(type) {
   const summary = document.getElementById("summary-panel");
+  const monoGrid = document.getElementById("grid-mono");
   const polyGrid = document.getElementById("grid-poly");
 
-  if (!summary || !polyGrid) return;
-  if (type === "poly") {
-    polyGrid.classList.toggle("hidden");
-    monoGrid.classList.add("hidden");
-  }
+  if (!summary || !monoGrid || !polyGrid) return;
 
-  // Jika ada grid yang tampil → summary disembunyikan
-  const gridAktif =
-    !polyGrid.classList.contains("hidden");
+  monoGrid.classList.add("hidden");
+  polyGrid.classList.add("hidden");
 
-  summary.classList.toggle("hidden", gridAktif);
+  if (type === "mono") monoGrid.classList.remove("hidden");
+  if (type === "poly") polyGrid.classList.remove("hidden");
+
+  summary.classList.add("hidden");
 }
 function openPanelPopup(type) {
-  const Popup = document.getElementById("panelPopup");
+  const popup = document.getElementById("panelPopup");
   const title = document.getElementById("PopupTitle");
-  const grid = document.getElementById("PopupGrid");
+  const content = document.getElementById("PopupContent");
 
-  grid.innerHTML = "";
+  if (!popup || !title || !content) return;
+
+  content.innerHTML = "";
 
   const sensors = type === "mono" ? MONO_SENSORS : POLY_SENSORS;
   title.textContent = `Detail Suhu Panel ${type.toUpperCase()}`;
 
+  const grid = document.createElement("div");
+  grid.className = "grid grid-cols-7 gap-3";
+
   sensors.forEach(key => {
     const div = document.createElement("div");
-    div.className =
-      "solar-panel bg-gray-100 rounded-xl p-3 text-center";
+    div.className = "solar-panel bg-gray-100 rounded-xl p-3 text-center";
     div.dataset.source = key;
     div.innerHTML = `
       <div class="text-xs text-gray-500">${key}</div>
@@ -108,9 +113,13 @@ function openPanelPopup(type) {
     grid.appendChild(div);
   });
 
-  Popup.classList.remove("hidden");
-  Popup.classList.add("flex");
+  content.appendChild(grid);
+
+  popup.classList.remove("hidden");
+  popup.classList.add("flex");
+  if (lastData) updateSolarPanels(lastData);
 }
+
 function closePanelPopup() {
   const Popup = document.getElementById("panelPopup");
   Popup.classList.add("hidden");

@@ -2,27 +2,14 @@ const SUPABASE_URL = "https://bryjpjzvsadfvjwqgwak.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyeWpwanp2c2FkZnZqd3Fnd2FrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0MzA0MDUsImV4cCI6MjA3NDAwNjQwNX0.1iWQJhtE02t4JTcutIPkzxmn2qyx-Z7JCKFDQ8itCw8";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const dataBody = document.getElementById("data-body");
-const water = document.getElementById("water");
-const valueDisplay = document.getElementById("valueDisplay");
-const radius = 60;
-const circumference = 2 * Math.PI * radius;
-const arcLength = circumference * (260 / 360);
-water.style.strokeDasharray = `${arcLength} ${circumference}`;
-water.style.strokeDashoffset = arcLength;
-
-const minTemp = 0;
-const maxTemp = 50;
-
 const MONO_SENSORS = [
   "suhu1", "suhu2",
   "ds18b20_0", "ds18b20_1", "ds18b20_2"
 ];
-
 const POLY_SENSORS = [
   "ds18b20_3", "ds18b20_4",
   "ds18b20_5", "ds18b20_6", "ds18b20_7"
 ];
-
 function hitungRataPanel(data, sensorList) {
   const values = sensorList
     .map(k => parseFloat(data[k]))
@@ -33,14 +20,6 @@ function hitungRataPanel(data, sensorList) {
   const sum = values.reduce((a, b) => a + b, 0);
   return sum / values.length;
 }
-
-function setLevel(temp) {
-  const percent = ((temp - minTemp) / (maxTemp - minTemp)) * 100;
-  const offset = arcLength - (percent / 100) * arcLength;
-  water.style.strokeDashoffset = offset;
-  valueDisplay.textContent = `${temp.toFixed(1)}°C`;
-}
-
 function updateSolarPanels(d) {
   document.querySelectorAll(".solar-panel").forEach(panel => {
     const key = panel.dataset.source;

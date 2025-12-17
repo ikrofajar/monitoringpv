@@ -59,22 +59,21 @@
             </h3>
           </div>
         </div>
-        <!-- ================= SUMMARY SUHU PANEL ================= -->
         <div id="summary-panel" class="flex flex-wrap justify-center gap-6 p-4">
-          <!-- SUMMARY MONO -->
           <div onclick="toggleGrid('mono')"
                class="cursor-pointer w-60 bg-white rounded-2xl shadow-lg p-4 text-center hover:scale-105 transition">
             <div class="text-sm text-gray-500 mb-1">Panel Surya MONO</div>
             <div class="text-3xl font-bold text-orange-500" id="avg-mono">- °C</div>
             <div class="text-xs text-gray-400 mt-1">Rata-rata Suhu</div>
+            <div class="text-xs text-gray-500 mt-1">RH: <span id="kelembaban1">- %</span></div>
             <div class="text-xs text-blue-600 mt-2">Klik untuk detail</div>
           </div>
-          <!-- SUMMARY POLY -->
           <div onclick="toggleGrid('poly')"
                class="cursor-pointer w-60 bg-white rounded-2xl shadow-lg p-4 text-center hover:scale-105 transition">
             <div class="text-sm text-gray-500 mb-1">Panel Surya POLY</div>
             <div class="text-3xl font-bold text-red-500" id="avg-poly">- °C</div>
             <div class="text-xs text-gray-400 mt-1">Rata-rata Suhu</div>
+            <div class="text-xs text-gray-500 mt-1">RH: <span id="kelembaban2">- %</span></div>
             <div class="text-xs text-blue-600 mt-2">Klik untuk detail</div>
           </div>
         </div>
@@ -146,16 +145,6 @@
           </div>
         </div>
         <div class="flex flex-wrap justify-center gap-4 p-4">
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-tint text-blue-100"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban1">- %</div>
-            <div class="text-xs sm:text-sm text-gray-500">RH Mono</div>
-          </div>
-          <div class="param-card">
-            <div class="mb-1"><i class="fas fa-tint text-blue-200"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="kelembaban2">- %</div>
-            <div class="text-xs sm:text-sm text-gray-500">RH Poly</div>
-          </div>
           <div class="param-card">
             <div class="mb-1"><i class="fas fa-wind text-gray-200"></i></div>
             <div class="text-sm sm:text-base md:text-lg font-semibold" id="kecepatan_angin">- km/h</div>

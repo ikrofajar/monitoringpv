@@ -62,6 +62,23 @@ function hitungRataPanel(data, sensorList) {
   const sum = values.reduce((a, b) => a + b, 0);
   return sum / values.length;
 }
+// ====== PANEL GRID BUILDER (WAJIB ADA) ======
+function buildPanelGrid(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = "";
+  for (let i = 1; i <= 14; i++) {
+    const div = document.createElement("div");
+    div.className =
+      "solar-panel bg-gray-100 rounded-xl p-3 text-center transition";
+    div.innerHTML = `
+      <div class="text-[10px] text-gray-400">p${i}</div>
+      <div class="text-xs text-gray-400">No Sensor</div>
+    `;
+    container.appendChild(div);
+  }
+}
 function updateSolarPanels(d, type = "mono") {
   const PANEL_MAP = type === "poly" ? PANEL_MAP_POLY : PANEL_MAP_MONO;
 
@@ -504,6 +521,8 @@ function showPage(page, el) {
   adjustContentOffset();
 }
 document.addEventListener("DOMContentLoaded", () => {
+  buildPanelGrid("monoGrid");
+  buildPanelGrid("polyGrid");
   const menuBtn = document.getElementById("menuBtn");
   const mobileMenu = document.getElementById("mobileMenu");
   if (menuBtn) menuBtn.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));

@@ -90,17 +90,6 @@ function updateDashboard(d) {
   if (avgPoly !== null) {
     document.getElementById("avg-poly").textContent = avgPoly.toFixed(1) + " °C";
   }
-  
-  // Gauge tetap pakai rata-rata MONO (atau bisa diganti total)
-  if (avgMono !== null) {
-    setLevel(avgMono);
-  
-    let kondisi;
-    if (avgMono < 35) kondisi = "Dingin";
-    else if (avgMono <= 45) kondisi = "Normal";
-    else kondisi = "Panas";
-  
-    document.getElementById("kondisiCuaca").textContent = kondisi;
   }
 }
 function toggleGrid(type) {

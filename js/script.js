@@ -23,7 +23,7 @@ function hitungRataPanel(data, sensorList) {
 function updateSolarPanels(d) {
   document.querySelectorAll(".solar-panel").forEach(panel => {
     const key = panel.dataset.source;
-    const val = d[key];
+    const val = parseFloat(d[key]);
 
     if (val === undefined || val === null) {
       panel.innerHTML = `<div class="text-xs text-gray-400">No Data</div>`;
@@ -68,7 +68,6 @@ function updateDashboard(d) {
   
   if (avgPoly !== null) {
     document.getElementById("avg-poly").textContent = avgPoly.toFixed(1) + " °C";
-  }
   }
 }
 function toggleGrid(type) {

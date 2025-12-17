@@ -72,16 +72,9 @@ function updateDashboard(d) {
 }
 function toggleGrid(type) {
   const summary = document.getElementById("summary-panel");
-  const monoGrid = document.getElementById("grid-mono");
   const polyGrid = document.getElementById("grid-poly");
 
-  if (!summary || !monoGrid || !polyGrid) return;
-
-  if (type === "mono") {
-    monoGrid.classList.toggle("hidden");
-    polyGrid.classList.add("hidden");
-  }
-
+  if (!summary || !polyGrid) return;
   if (type === "poly") {
     polyGrid.classList.toggle("hidden");
     monoGrid.classList.add("hidden");
@@ -89,11 +82,44 @@ function toggleGrid(type) {
 
   // Jika ada grid yang tampil → summary disembunyikan
   const gridAktif =
-    !monoGrid.classList.contains("hidden") ||
     !polyGrid.classList.contains("hidden");
 
   summary.classList.toggle("hidden", gridAktif);
 }
+function openPanelPopup(type) {
+  const modal = document.getElementById("panelModal");
+  const title = document.getElementById("modalTitle");
+  const grid = document.getElementById("modalGrid");
+
+  grid.innerHTML = "";
+
+  const sensors = type === "mono" ? MONO_SENSORS : POLY_SENSORS;
+  title.textContent = `Detail Suhu Panel ${type.toUpperCase()}`;
+
+  sensors.forEach(key => {
+    const div = document.createElement("div");
+    div.className =
+      "solar-panel bg-gray-100 rounded-xl p-3 text-center";
+    div.dataset.source = key;
+    div.innerHTML = `
+      <div class="text-xs text-gray-500">${key}</div>
+      <div class="text-sm font-bold">- °C</div>
+    `;
+    grid.appendChild(div);
+  });
+
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+}
+function closePanelPopup() {
+  const modal = document.getElementById("panelModal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+document.getElementById("panelModal").addEventListener("click", e => {
+  if (e.target.id === "panelModal") closePanelPopup();
+});
+
 
 function initCharts() {
   if (!window.allCharts) window.allCharts = {};

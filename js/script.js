@@ -430,9 +430,21 @@ function formatRow(d) {
   <tr class="bg-white">
   <td class="border px-2 py-1">${tanggal}</td>
   <td class="border px-2 py-1">${waktu}</td>
+  <td class="border px-2 py-1">${d.mono_voltage}</td>
+  <td class="border px-2 py-1">${d.mono_current}</td>
+  <td class="border px-2 py-1">${d.ds18b20_4}</td>
+  <td class="border px-2 py-1">${d.ds18b20_5}</td>
   <td class="border px-2 py-1">${d.suhu1}</td>
-  <td class="border px-2 py-1">${d.suhu2}</td>
+  <td class="border px-2 py-1">${d.ds18b20_6}</td>
+  <td class="border px-2 py-1">${d.ds18b20_0}</td>
   <td class="border px-2 py-1">${d.kelembaban1}</td>
+  <td class="border px-2 py-1">${d.poly_voltage}</td>
+  <td class="border px-2 py-1">${d.poly_current}</td>
+  <td class="border px-2 py-1">${d.ds18b20_1}</td>
+  <td class="border px-2 py-1">${d.ds18b20_3}</td>
+  <td class="border px-2 py-1">${d.suhu2}</td>
+  <td class="border px-2 py-1">${d.ds18b20_2}</td>
+  <td class="border px-2 py-1">${d.ds18b20_7}</td>
   <td class="border px-2 py-1">${d.kelembaban2}</td>
   <td class="border px-2 py-1">${d.uv_index}</td>
   <td class="border px-2 py-1">${d.debu}</td>
@@ -487,9 +499,11 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
   
   if (formatExcel) {
     const wsData = [
-      ["Tanggal","Waktu","Suhu Mono","RH Mono","Suhu Poly","RH Poly",
-       "UV Index","Debu","Curah Hujan",
-       "Kecepatan Angin","Arah Angin","Radiasi Matahari"]
+      ["Tanggal","Waktu","Tegangan Mono","Arus Mono",
+       "Suhu Mono 1","Suhu Mono 2","Suhu Mono 3","Suhu Mono 4","Suhu Mono 5","RH Mono",
+       "Tegangan Poly","Arus Poly",
+       "Suhu Poly 1","Suhu Poly 2","Suhu Poly 3","Suhu Poly 4","Suhu Poly 5","RH Poly",
+       "UV","Radiasi Matahari","Debu","Curah Hujan","Kecepatan Angin","Arah Angin"]
     ];
     data.forEach(d => {
       const [tanggal, waktu] = formatTimestamp(d.timestamp).split(" ");
@@ -497,10 +511,11 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
       wsData.push([
         //ts.toLocaleDateString('id-ID'),
         //ts.toLocaleTimeString('id-ID'),
-        tanggal, waktu,
-        d.suhu1, d.kelembaban1, d.suhu2, d.kelembaban2,
-        d.uv_index, d.debu, d.curah_hujan,
-        d.kecepatan_angin, d.arah_angin, d.irradiance
+        tanggal, waktu, d.mono_voltage, d.mono_current,
+        d.ds18b20_4, d.ds18b20_5, d.suhu1, d.ds18b20_6, d.ds18b20_0, d.kelembaban1,
+        d.poly_voltage, d.poly_current,
+        d.ds18b20_1, d.ds18b20_3, d.suhu2, d.ds18b20_2, d.ds18b20_7, d.kelembaban2,
+        d.uv_index, d.irradiance, d.debu, d.curah_hujan,d.kecepatan_angin, d.arah_angin
       ]);
     });
     const ws = XLSX.utils.aoa_to_sheet(wsData);
@@ -511,7 +526,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
   const csvHeader = [
     "Tanggal","Waktu","Tegangan Mono","Arus Mono","Suhu Mono 1","Suhu Mono 2","Suhu Mono 3","Suhu Mono 4","Suhu Mono 5",
     "RH Mono","Tegangan Poly","Arus Poly","Suhu Poly 1","Suhu Poly 2","Suhu Poly 3","Suhu Poly 4","Suhu Poly 5","RH Poly",
-    "UV","Debu","Curah Hujan","Kecepatan Angin","Arah Angin","Radiasi Matahari"
+    "UV","Radiasi Matahari","Debu","Curah Hujan","Kecepatan Angin","Arah Angin"
   ];
   const csvRows = data.map(d => {
     const [tanggal, waktu] = formatTimestamp(d.timestamp).split(" ");
@@ -521,7 +536,7 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
       //ts.toLocaleTimeString('id-ID'),
       tanggal, waktu, d.mono_voltage, d.mono_current, d.ds18b20_4, d.ds18b20_5, d.suhu1, d.ds18b20_6, d.ds18b20_0,
       d.kelembaban1, d.poly_voltage, d.poly_current, d.ds18b20_1, d.ds18b20_3, d.suhu2, d.ds18b20_2, d.ds18b20_7, d.kelembaban2,
-      d.uv_index, d.debu, d.curah_hujan, d.kecepatan_angin, d.arah_angin, d.irradiance
+      d.uv_index, d.irradiance, d.debu, d.curah_hujan, d.kecepatan_angin, d.arah_angin
     ].join(',');
   });
   const csvContent = [csvHeader.join(','), ...csvRows].join('\n');

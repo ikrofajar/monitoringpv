@@ -81,16 +81,55 @@ function buildPanelGrid(containerId) {
 }
 function updateSolarPanels(d, type = "mono") {
   const PANEL_MAP = type === "poly" ? PANEL_MAP_POLY : PANEL_MAP_MONO;
-
-  document
-    .querySelectorAll(
-      type === "poly"
-        ? "#grid-poly .solar-panel"
-        : "#grid-mono .solar-panel"
-    )
+  
+  document.querySelectorAll(
+  type === "poly"
+    ? "#polyGrid .solar-panel"
+    : "#monoGrid .solar-panel"
+  )
     .forEach((panel, i) => {
 
       const panelIndex = "p" + (i + 1);
+      const key = PANEL_MAP[panelIndex];
+
+      if (!key || d[key] === undefined) {
+        panel.classList.remove(
+          "bg-green-100","bg-yellow-200","bg-orange-200","bg-red-200"
+        );
+        panel.classList.add("bg-gray-100");
+        panel.innerHTML = `
+          <div class="text-[10px] text-gray-400">${panelIndex}</div>
+          <div class="text-xs text-gray-400">No Sensor</div>
+        `;
+        return;
+      }
+
+      const val = parseFloat(d[key]);
+      if (isNaN(val)) return;
+
+      let color = "bg-green-100";
+      if (val >= 50) color = "bg-red-200";
+      else if (val >= 40) color = "bg-orange-200";
+      else if (val >= 30) color = "bg-yellow-200";
+
+      panel.classList.remove(
+        "bg-green-100","bg-yellow-200","bg-orange-200","bg-red-200"
+      );
+      panel.classList.add(color);
+
+      panel.innerHTML = `
+        <div class="text-[10px] text-gray-600">${panelIndex} • ${key}</div>
+        <div class="text-sm font-bold">${val.toFixed(1)} °C</div>
+      `;
+    });
+}
+function updatePopupSolarPanels(d, type = "mono") {
+  const PANEL_MAP = type === "poly" ? PANEL_MAP_POLY : PANEL_MAP_MONO;
+
+  document
+    .querySelectorAll("#PopupContent .solar-panel")
+    .forEach(panel => {
+      const panelIndex = panel.dataset.panel;
       const key = PANEL_MAP[panelIndex];
 
       if (!key || d[key] === undefined) {
@@ -153,6 +192,13 @@ function updateDashboard(d) {
     document.getElementById("avg-poly").textContent =
       avgPoly.toFixed(1) + " °C";
   }
+    // === UPDATE POPUP JIKA SEDANG TERBUKA ===
+  const popup = document.getElementById("panelPopup");
+  if (popup && !popup.classList.contains("hidden")) {
+    const title = document.getElementById("PopupTitle").textContent.toLowerCase();
+    if (title.includes("mono")) updatePopupSolarPanels(d, "mono");
+    if (title.includes("poly")) updatePopupSolarPanels(d, "poly");
+  }
 }
 function toggleGrid(type) {
   const summary = document.getElementById("summary-panel");
@@ -176,32 +222,32 @@ function openPanelPopup(type) {
 
   if (!popup || !title || !content) return;
 
+  title.textContent = `Detail Panel ${type.toUpperCase()} (2 × 7)`;
   content.innerHTML = "";
-
-  const sensors = type === "mono" ? MONO_SENSORS : POLY_SENSORS;
-  title.textContent = `Detail Suhu Panel ${type.toUpperCase()}`;
 
   const grid = document.createElement("div");
   grid.className = "grid grid-cols-7 gap-3";
 
-  sensors.forEach(key => {
+  for (let i = 1; i <= 14; i++) {
     const div = document.createElement("div");
     div.className = "solar-panel bg-gray-100 rounded-xl p-3 text-center";
-    div.dataset.source = key;
+    div.dataset.panel = "p" + i;
+
     div.innerHTML = `
-      <div class="text-xs text-gray-500">${key}</div>
-      <div class="text-sm font-bold">- °C</div>
+      <div class="text-[10px] text-gray-400">p${i}</div>
+      <div class="text-xs text-gray-400">No Sensor</div>
     `;
+
     grid.appendChild(div);
-  });
+  }
 
   content.appendChild(grid);
 
   popup.classList.remove("hidden");
   popup.classList.add("flex");
-  if (lastData) updateSolarPanels(lastData, type);
-}
 
+  if (lastData) updatePopupSolarPanels(lastData, type);
+}
 function closePanelPopup() {
   const Popup = document.getElementById("panelPopup");
   Popup.classList.add("hidden");

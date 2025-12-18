@@ -172,6 +172,10 @@ function updateDashboard(d) {
 
   document.getElementById("kelembaban1").textContent = d.kelembaban1 + " %";
   document.getElementById("kelembaban2").textContent = d.kelembaban2 + " %";
+  document.getElementById("mono_voltage").textContent = d.mono_voltage !== null ? d.mono_voltage + " V" : "-";
+  document.getElementById("mono_current").textContent = d.mono_current !== null ? d.mono_current + " A" : "-";
+  document.getElementById("poly_voltage").textContent = d.poly_voltage !== null ? d.poly_voltage + " V" : "-";
+  document.getElementById("poly_current").textContent = d.poly_current !== null ? d.poly_current + " A" : "-";
   document.getElementById("uv_index").textContent = d.uv_index;
   document.getElementById("debu").textContent = d.debu + " µg/m³";
   document.getElementById("curah_hujan").textContent = d.curah_hujan + " mm";
@@ -505,9 +509,9 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
     XLSX.writeFile(wb, `histori_${safeStart}_${safeEnd}.xlsx`);
   } else {
   const csvHeader = [
-    "Tanggal","Waktu","Suhu Mono","RH Mono","Suhu Poly","RH Poly",
-    "UV Index","Debu","Curah Hujan",
-    "Kecepatan Angin","Arah Angin","Radiasi Matahari"
+    "Tanggal","Waktu","Tegangan Mono","Arus Mono","Suhu Mono 1","Suhu Mono 2","Suhu Mono 3","Suhu Mono 4","Suhu Mono 5",
+    "RH Mono","Tegangan Poly","Arus Poly","Suhu Poly 1","Suhu Poly 2","Suhu Poly 3","Suhu Poly 4","Suhu Poly 5","RH Poly",
+    "UV","Debu","Curah Hujan","Kecepatan Angin","Arah Angin","Radiasi Matahari"
   ];
   const csvRows = data.map(d => {
     const [tanggal, waktu] = formatTimestamp(d.timestamp).split(" ");
@@ -515,10 +519,9 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
     return [
       //ts.toLocaleDateString('id-ID'),
       //ts.toLocaleTimeString('id-ID'),
-      tanggal, waktu,
-      d.suhu1, d.suhu2, d.kelembaban1, d.kelembaban2,
-      d.uv_index, d.debu, d.curah_hujan,
-      d.kecepatan_angin, d.arah_angin, d.irradiance
+      tanggal, waktu, d.mono_voltage, d.mono_current, d.ds18b20_4, d.ds18b20_5, d.suhu1, d.ds18b20_6, d.ds18b20_0,
+      d.kelembaban1, d.poly_voltage, d.poly_current, d.ds18b20_1, d.ds18b20_3, d.suhu2, d.ds18b20_2, d.ds18b20_7, d.kelembaban2,
+      d.uv_index, d.debu, d.curah_hujan, d.kecepatan_angin, d.arah_angin, d.irradiance
     ].join(',');
   });
   const csvContent = [csvHeader.join(','), ...csvRows].join('\n');

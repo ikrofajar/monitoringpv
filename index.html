@@ -65,9 +65,9 @@
             <div class="text-3xl font-bold text-orange-500" id="avg-mono">- °C</div>
             <div class="text-xs text-gray-400 mt-1">Rata-rata Suhu</div>
             <div class="mt-1 text-xs text-gray-500 flex justify-center gap-3 flex-wrap">
-              <span>RH: <span id="kelembaban1">- %</span></span>
-              <span>V: <span id="mono_voltage">- V</span></span>
-              <span>I: <span id="mono_current">- A</span></span>
+              <span>RH: <span id="kelembaban_mono">- %</span></span>
+              <span>V: <span id="tegangan_mono">- V</span></span>
+              <span>I: <span id="arus_mono">- A</span></span>
             </div>
             <button
               onclick="openPanelPopup('mono')"
@@ -80,9 +80,9 @@
             <div class="text-3xl font-bold text-red-500" id="avg-poly">- °C</div>
             <div class="text-xs text-gray-400 mt-1">Rata-rata Suhu</div>
             <div class="mt-1 text-xs text-gray-500 flex justify-center gap-3 flex-wrap">
-              <span>RH: <span id="kelembaban2">- %</span></span>
-              <span>V: <span id="poly_voltage">- V</span></span>
-              <span>I: <span id="poly_current">- A</span></span>
+              <span>RH: <span id="kelembaban_poly">- %</span></span>
+              <span>V: <span id="tegangan_poly">- V</span></span>
+              <span>I: <span id="arus_poly">- A</span></span>
             </div>
             <button
               onclick="openPanelPopup('poly')"
@@ -134,7 +134,7 @@
           </div>
           <div class="param-card">
             <div class="mb-1"><i class="fas fa-sun text-yellow-300"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="uv_index">-</div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="uv">-</div>
             <div class="text-xs sm:text-sm text-gray-500">UV</div>
           </div>
           <div class="param-card">
@@ -149,7 +149,7 @@
           </div>
           <div class="param-card">
             <div class="mb-1"><i class="fas fa-cloud-showers-heavy text-blue-400"></i></div>
-            <div class="text-sm sm:text-base md:text-lg font-semibold" id="curah_hujan">- mm</div>
+            <div class="text-sm sm:text-base md:text-lg font-semibold" id="curah_hujan">- mm/h</div>
             <div class="text-xs sm:text-sm text-gray-500">Curah Hujan</div>
           </div>
         </div>

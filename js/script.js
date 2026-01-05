@@ -170,13 +170,13 @@ function updateDashboard(d) {
   updateSolarPanels(d, "mono");
   updateSolarPanels(d, "poly");
 
-  document.getElementById("kelembaban1").textContent = d.kelembaban_mono + " %";
-  document.getElementById("kelembaban2").textContent = d.kelembaban_poly + " %";
-  document.getElementById("mono_voltage").textContent = d.tegangan_mono !== null ? d.tegangan_mono + " V" : "-";
-  document.getElementById("mono_current").textContent = d.arus_mono !== null ? d.arus_mono + " A" : "-";
-  document.getElementById("poly_voltage").textContent = d.tegangan_poly !== null ? d.tegangan_poly + " V" : "-";
-  document.getElementById("poly_current").textContent = d.arus_poly !== null ? d.arus_poly + " A" : "-";
-  document.getElementById("uv_index").textContent = d.uv;
+  document.getElementById("kelembaban_mono").textContent = d.kelembaban_mono + " %";
+  document.getElementById("kelembaban_poly").textContent = d.kelembaban_poly + " %";
+  document.getElementById("tegangan_mono").textContent = d.tegangan_mono !== null ? d.tegangan_mono + " V" : "-";
+  document.getElementById("arus_mono").textContent = d.arus_mono !== null ? d.arus_mono + " A" : "-";
+  document.getElementById("tegangan_poly").textContent = d.tegangan_poly !== null ? d.tegangan_poly + " V" : "-";
+  document.getElementById("arus_poly").textContent = d.arus_poly !== null ? d.arus_poly + " A" : "-";
+  document.getElementById("uv").textContent = d.uv;
   document.getElementById("debu").textContent = d.debu + " µg/m³";
   document.getElementById("curah_hujan").textContent = d.curah_hujan + " mm";
   document.getElementById("kecepatan_angin").textContent = d.kecepatan_angin + " km/h";
@@ -511,11 +511,11 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
       wsData.push([
         //ts.toLocaleDateString('id-ID'),
         //ts.toLocaleTimeString('id-ID'),
-        tanggal, waktu, d.mono_voltage, d.mono_current,
-        d.ds18b20_4, d.ds18b20_5, d.suhu1, d.ds18b20_6, d.ds18b20_0, d.kelembaban1,
-        d.poly_voltage, d.poly_current,
-        d.ds18b20_1, d.ds18b20_3, d.suhu2, d.ds18b20_2, d.ds18b20_7, d.kelembaban2,
-        d.uv_index, d.irradiance, d.debu, d.curah_hujan,d.kecepatan_angin, d.arah_angin
+        tanggal, waktu, d.tegangan_mono, d.arus_mono,
+        d.ds4, d.ds5, d.suhu_mono, d.ds6, d.ds0, d.kelembaban_mono,
+        d.tegangan_poly, d.arus_poly,
+        d.ds1, d.ds3, d.suhu_poly, d.ds2, d.ds7, d.kelembaban_poly,
+        d.uv, d.irradiance, d.debu, d.curah_hujan,d.kecepatan_angin, d.arah_angin
       ]);
     });
     const ws = XLSX.utils.aoa_to_sheet(wsData);

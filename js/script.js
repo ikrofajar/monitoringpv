@@ -7,50 +7,50 @@ let lastData = null;
 const PANEL_MAP_MONO = {
   p1: null,
   p2: null,
-  p3: "ds18b20_6",
-  p4: "suhu1",      // tengah atas
+  p3: "ds6",
+  p4: "suhu_mono",      // tengah atas
   p5: null,
   p6: null,
-  p7: "ds18b20_4",
+  p7: "ds4",
 
-  p8: "ds18b20_0",
+  p8: "ds0",
   p9: null,
   p10: null,
-  p11: "suhu1",     // tengah bawah
-  p12: "ds18b20_5",
+  p11: "suhu_mono",     // tengah bawah
+  p12: "ds5",
   p13: null,
   p14: null
 };
 const PANEL_MAP_POLY = {
   p1: null,
   p2: null,
-  p3: "ds18b20_2",
-  p4: "suhu2",       // tengah atas
+  p3: "ds2",
+  p4: "suhu_poly",       // tengah atas
   p5: null,
   p6: null,
-  p7: "ds18b20_1",
+  p7: "ds1",
 
-  p8: "ds18b20_7",
+  p8: "ds7",
   p9: null,
   p10: null,
-  p11: "suhu2",     // tengah bawah
-  p12: "ds18b20_3",
+  p11: "suhu_poly",     // tengah bawah
+  p12: "ds3",
   p13: null,
   p14: null
 };
 const MONO_SENSORS = [
-  "ds18b20_4",
-  "ds18b20_5",
-  "ds18b20_6",
-  "ds18b20_0",
-  "suhu1"
+  "ds4",
+  "ds5",
+  "ds6",
+  "ds0",
+  "suhu_mono"
 ];
 const POLY_SENSORS = [
-  "ds18b20_1",
-  "ds18b20_3",
-  "ds18b20_2",
-  "ds18b20_7",
-  "suhu2"
+  "ds1",
+  "ds3",
+  "ds2",
+  "ds7",
+  "suhu_poly"
 ];
 function hitungRataPanel(data, sensorList) {
   const values = sensorList
@@ -170,13 +170,13 @@ function updateDashboard(d) {
   updateSolarPanels(d, "mono");
   updateSolarPanels(d, "poly");
 
-  document.getElementById("kelembaban1").textContent = d.kelembaban1 + " %";
-  document.getElementById("kelembaban2").textContent = d.kelembaban2 + " %";
-  document.getElementById("mono_voltage").textContent = d.mono_voltage !== null ? d.mono_voltage + " V" : "-";
-  document.getElementById("mono_current").textContent = d.mono_current !== null ? d.mono_current + " A" : "-";
-  document.getElementById("poly_voltage").textContent = d.poly_voltage !== null ? d.poly_voltage + " V" : "-";
-  document.getElementById("poly_current").textContent = d.poly_current !== null ? d.poly_current + " A" : "-";
-  document.getElementById("uv_index").textContent = d.uv_index;
+  document.getElementById("kelembaban1").textContent = d.kelembaban_mono + " %";
+  document.getElementById("kelembaban2").textContent = d.kelembaban_poly + " %";
+  document.getElementById("mono_voltage").textContent = d.tegangan_mono !== null ? d.tegangan_mono + " V" : "-";
+  document.getElementById("mono_current").textContent = d.arus_mono !== null ? d.arus_mono + " A" : "-";
+  document.getElementById("poly_voltage").textContent = d.tegangan_poly !== null ? d.tegangan_poly + " V" : "-";
+  document.getElementById("poly_current").textContent = d.arus_poly !== null ? d.arus_poly + " A" : "-";
+  document.getElementById("uv_index").textContent = d.uv;
   document.getElementById("debu").textContent = d.debu + " µg/m³";
   document.getElementById("curah_hujan").textContent = d.curah_hujan + " mm";
   document.getElementById("kecepatan_angin").textContent = d.kecepatan_angin + " km/h";
@@ -342,9 +342,9 @@ function updateAllCharts(entry){
   const timeLabel = formatTimestamp(entry.timestamp).split(" ")[1];
   //const timeLabel = new Date(entry.timestamp).toLocaleTimeString('id-ID');
   const charts = [
-    {chart:window.allCharts['chartSuhu'], values:[parseFloat(entry.suhu1), parseFloat(entry.suhu2)]},
-    {chart:window.allCharts['chartKelembaban'], values:[parseFloat(entry.kelembaban1), parseFloat(entry.kelembaban2)]},
-    {chart:window.allCharts['chartUV'], values:[parseFloat(entry.uv_index)]},
+    {chart:window.allCharts['chartSuhu'], values:[parseFloat(entry.suhu_mono), parseFloat(entry.suhu_poly)]},
+    {chart:window.allCharts['chartKelembaban'], values:[parseFloat(entry.kelembaban_mono), parseFloat(entry.kelembaban_poly)]},
+    {chart:window.allCharts['chartUV'], values:[parseFloat(entry.uv)]},
     {chart:window.allCharts['chartAngin'], values:[parseFloat(entry.kecepatan_angin)]},
     {chart:window.allCharts['chartRadiasi'], values:[parseFloat(entry.irradiance)]},
     {chart:window.allCharts['chartDebu'], values:[parseFloat(entry.debu)]},
@@ -430,23 +430,23 @@ function formatRow(d) {
   <tr class="bg-white">
   <td class="border px-2 py-1">${tanggal}</td>
   <td class="border px-2 py-1">${waktu}</td>
-  <td class="border px-2 py-1">${d.mono_voltage}</td>
-  <td class="border px-2 py-1">${d.mono_current}</td>
-  <td class="border px-2 py-1">${d.ds18b20_4}</td>
-  <td class="border px-2 py-1">${d.ds18b20_5}</td>
-  <td class="border px-2 py-1">${d.suhu1}</td>
-  <td class="border px-2 py-1">${d.ds18b20_6}</td>
-  <td class="border px-2 py-1">${d.ds18b20_0}</td>
-  <td class="border px-2 py-1">${d.kelembaban1}</td>
-  <td class="border px-2 py-1">${d.poly_voltage}</td>
-  <td class="border px-2 py-1">${d.poly_current}</td>
-  <td class="border px-2 py-1">${d.ds18b20_1}</td>
-  <td class="border px-2 py-1">${d.ds18b20_3}</td>
-  <td class="border px-2 py-1">${d.suhu2}</td>
-  <td class="border px-2 py-1">${d.ds18b20_2}</td>
-  <td class="border px-2 py-1">${d.ds18b20_7}</td>
-  <td class="border px-2 py-1">${d.kelembaban2}</td>
-  <td class="border px-2 py-1">${d.uv_index}</td>
+  <td class="border px-2 py-1">${d.tegangan_mono}</td>
+  <td class="border px-2 py-1">${d.arus_mono}</td>
+  <td class="border px-2 py-1">${d.ds4}</td>
+  <td class="border px-2 py-1">${d.ds5}</td>
+  <td class="border px-2 py-1">${d.suhu_mono}</td>
+  <td class="border px-2 py-1">${d.ds6}</td>
+  <td class="border px-2 py-1">${d.ds0}</td>
+  <td class="border px-2 py-1">${d.kelembaban_poly}</td>
+  <td class="border px-2 py-1">${d.tegangan_poly}</td>
+  <td class="border px-2 py-1">${d.arus_poly}</td>
+  <td class="border px-2 py-1">${d.ds1}</td>
+  <td class="border px-2 py-1">${d.ds3}</td>
+  <td class="border px-2 py-1">${d.suhu_poly}</td>
+  <td class="border px-2 py-1">${d.ds2}</td>
+  <td class="border px-2 py-1">${d.ds7}</td>
+  <td class="border px-2 py-1">${d.kelembaban_poly}</td>
+  <td class="border px-2 py-1">${d.uv}</td>
   <td class="border px-2 py-1">${d.debu}</td>
   <td class="border px-2 py-1">${d.curah_hujan}</td>
   <td class="border px-2 py-1">${d.kecepatan_angin}</td>
@@ -534,9 +534,9 @@ document.getElementById('downloadCsvBtn').addEventListener('click', async () => 
     return [
       //ts.toLocaleDateString('id-ID'),
       //ts.toLocaleTimeString('id-ID'),
-      tanggal, waktu, d.mono_voltage, d.mono_current, d.ds18b20_4, d.ds18b20_5, d.suhu1, d.ds18b20_6, d.ds18b20_0,
-      d.kelembaban1, d.poly_voltage, d.poly_current, d.ds18b20_1, d.ds18b20_3, d.suhu2, d.ds18b20_2, d.ds18b20_7, d.kelembaban2,
-      d.uv_index, d.irradiance, d.debu, d.curah_hujan, d.kecepatan_angin, d.arah_angin
+      tanggal, waktu, d.tegangan_mono, d.arus_mono, d.ds4, d.ds5, d.suhu_mono, d.ds6, d.ds0,
+      d.kelembaban_mono, d.tegangan_poly, d.arus_poly, d.ds1, d.ds3, d.suhu_poly, d.ds2, d.ds7, d.kelembaban_poly,
+      d.uv, d.irradiance, d.debu, d.curah_hujan, d.kecepatan_angin, d.arah_angin
     ].join(',');
   });
   const csvContent = [csvHeader.join(','), ...csvRows].join('\n');
